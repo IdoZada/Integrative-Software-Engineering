@@ -2,13 +2,13 @@ package app;
 
 public class UserId {
 
-	private String email;
 	private String domain;
+	private String email;
 	
 	public UserId() {
 		
 	}
-	public UserId(String email, String domain) {
+	public UserId(String domain, String email) {
 		
 		this.email = email;
 		this.domain = domain;
