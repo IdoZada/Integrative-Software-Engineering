@@ -28,15 +28,7 @@ public class ElementBoundary {
 		this.attributes = attributes;
 	}
 	
-	public ElementBoundary(String type, boolean active, Date timeStamp, CreatedBy createdBy,Location location) {
-		this.type = type;
-		this.active = active;
-		this.timeStamp = timeStamp;
-		this.createdBy = createdBy;
-		this.location = location;
-	}
-
-
+	
 	public ElementID getElementId() {
 		return elementId;
 	}
