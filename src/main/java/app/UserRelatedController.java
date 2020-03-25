@@ -14,7 +14,7 @@ public class UserRelatedController {
 			produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	
-	public UserBoundary newUser (@RequestBody NewUserBoundary newUserBoundary) {
+	public UserBoundary newUser (@RequestBody NewUserDetails newUserBoundary) {
 		return new UserBoundary (newUserBoundary.getRole(), newUserBoundary.getUserName(),
 				new UserId(newUserBoundary.getEmail(), "2020b"));
 	}
