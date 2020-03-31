@@ -6,6 +6,7 @@ import java.util.Map;
 public class ElementBoundary {
 	private ElementID elementId;
 	private String type;
+	private String name;
 	private boolean active;
 	private Date timeStamp;
 	private CreatedBy createdBy;
@@ -18,10 +19,11 @@ public class ElementBoundary {
 	}
 	
 
-	public ElementBoundary(ElementID elementId, String type, boolean active, Date timeStamp, CreatedBy createdBy,Location location,Map<String,Object> attributes) {
+	public ElementBoundary(ElementID elementId, String type, boolean active,String name, Date timeStamp, CreatedBy createdBy,Location location,Map<String,Object> attributes) {
 		this.elementId = elementId;
 		this.type = type;
 		this.active = active;
+		this.name = name;
 		this.timeStamp = timeStamp;
 		this.createdBy = createdBy;
 		this.location = location;
@@ -70,14 +72,6 @@ public class ElementBoundary {
 	}
 
 	
-	public Date getDate() {
-		return timeStamp;
-	}
-
-	public void setDate(Date timeStamp) {
-		this.timeStamp = timeStamp;
-	}
-	
 	public Map<String, Object> getAttributes() {
 		return attributes;
 	}
@@ -87,6 +81,25 @@ public class ElementBoundary {
 		this.attributes = attributes;
 	}
 
+	
+	public Date getTimeStamp() {
+		return timeStamp;
+	}
+
+
+	public void setTimeStamp(Date timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	
 
