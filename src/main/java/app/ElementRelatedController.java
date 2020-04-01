@@ -20,7 +20,7 @@ public class ElementRelatedController {
 	public ElementBoundary createNewElement(@RequestBody ElementBoundary newElementBoundary,
 			@PathVariable("managerDomain") String managerDomain, @PathVariable("managerEmail") String managerEmail) {
 			
-		return new ElementBoundary(new ElementID("2020b.daniel", "10"), "demoElement", true, new Date(),
+		return new ElementBoundary(new ElementID("2020b.daniel", "10"), "demoElement", true,"main element", new Date(),
 				new CreatedBy(new UserId(managerDomain, managerEmail)), new Location(32.115139, 34.817804),
 				Collections.singletonMap("key", "value"));
 	}
