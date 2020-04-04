@@ -1,4 +1,4 @@
-package app;
+package acs.boundary;
 
 public class MessageBoundary {
 	private String message;

@@ -1,4 +1,4 @@
-package app;
+package acs;
 
 public class Location {
 	private double lat;

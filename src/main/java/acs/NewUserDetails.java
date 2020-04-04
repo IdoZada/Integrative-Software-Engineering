@@ -1,30 +1,30 @@
-package app;
+package acs;
+
+import acs.data.UserRole;
 
 public class NewUserDetails {
 	
-	private Role role;
+	private UserRole role;
 	private String userName;
 	private String email;
+	private String avatar;
 	
 	public NewUserDetails() {
 		
 	}
 	
-
-	
-	public NewUserDetails(Role role, String userName, String email) {
+	public NewUserDetails(UserRole role, String userName, String email, String avatar) {
 		this.role = role;
 		this.userName = userName;
 		this.email = email;
+		this.avatar = avatar;
 	}
 
-
-
-	public Role getRole() {
+	public UserRole getRole() {
 		return role;
 	}
 
-	public void setRole(Role role) {
+	public void setRole(UserRole role) {
 		this.role = role;
 	}
 
@@ -44,13 +44,11 @@ public class NewUserDetails {
 		this.email = email;
 	}
 
-	
-	
-	
+	public String getAvatar() {
+		return avatar;
+	}
 
-	
-	
-	
-	
-
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
 }

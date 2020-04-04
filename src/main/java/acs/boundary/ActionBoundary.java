@@ -1,7 +1,11 @@
-package app;
+package acs.boundary;
 
 import java.util.Date;
 import java.util.Map;
+
+import acs.ActionId;
+import acs.ElementID;
+import acs.UserId;
 
 public class ActionBoundary {
 	

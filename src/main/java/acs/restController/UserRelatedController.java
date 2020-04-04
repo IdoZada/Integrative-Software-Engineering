@@ -1,4 +1,4 @@
-package app;
+package acs.restController;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -6,6 +6,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import acs.NewUserDetails;
+import acs.UserId;
+import acs.boundary.UserBoundary;
+import acs.data.UserRole;
 
 @RestController
 public class UserRelatedController {
@@ -17,7 +22,7 @@ public class UserRelatedController {
 	
 	public UserBoundary newUser (@RequestBody NewUserDetails newUserDetails) {
 		return new UserBoundary (newUserDetails.getRole(), newUserDetails.getUserName(),
-				new UserId(newUserDetails.getEmail(), "2020b"));
+				new UserId(newUserDetails.getEmail(), "2020b"), ":-)");
 	}
 	
 	@RequestMapping(path = "/acs/users/login/{userDomain}/{userEmail}",
@@ -28,8 +33,8 @@ public class UserRelatedController {
 			@PathVariable("userDomain") String userDomain
 			,@PathVariable("userEmail") String userEmail ) {
 		UserBoundary userBoundary = new UserBoundary(
-				Role.PLAYER, "Tomer"
-				, new UserId("tomer@gmail.com", "2020t"));
+				UserRole.PLAYER, "Tomer"
+				, new UserId("tomer@gmail.com", "2020t"),":-)");
 		
 		if(userDomain.equals(userBoundary.getUserId().getDomain())
 				&& userEmail.equals(userBoundary.getUserId().getEmail())) {
@@ -57,7 +62,7 @@ public class UserRelatedController {
 		 UserBoundary updateUsBoundary = new UserBoundary (
 				userBoundary.getRole()
 				, userBoundary.getUserName(),
-				new UserId(userBoundary.getUserId().getEmail(), userBoundary.getUserId().getDomain()));
+				new UserId(userBoundary.getUserId().getEmail(), userBoundary.getUserId().getDomain()),":-P");
 		 
 		 UserId userId = new UserId(userEmail, userDomain);
 		 updateUsBoundary.setUserId(userId);

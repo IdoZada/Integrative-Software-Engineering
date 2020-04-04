@@ -1,13 +1,17 @@
-package app;
+package acs.boundary;
 
 import java.util.Date;
 import java.util.Map;
+
+import acs.CreatedBy;
+import acs.ElementID;
+import acs.Location;
 
 public class ElementBoundary {
 	private ElementID elementId;
 	private String type;
 	private String name;
-	private boolean active;
+	private Boolean active;
 	private Date timeStamp;
 	private CreatedBy createdBy;
 	private Location location;
@@ -19,7 +23,7 @@ public class ElementBoundary {
 	}
 	
 
-	public ElementBoundary(ElementID elementId, String type, boolean active,String name, Date timeStamp, CreatedBy createdBy,Location location,Map<String,Object> attributes) {
+	public ElementBoundary(ElementID elementId, String type, Boolean active,String name, Date timeStamp, CreatedBy createdBy,Location location,Map<String,Object> attributes) {
 		this.elementId = elementId;
 		this.type = type;
 		this.active = active;
@@ -47,11 +51,11 @@ public class ElementBoundary {
 		this.type = type;
 	}
 
-	public boolean isActive() {
+	public Boolean isActive() {
 		return active;
 	}
 
-	public void setActive(boolean active) {
+	public void setActive(Boolean active) {
 		this.active = active;
 	}
 

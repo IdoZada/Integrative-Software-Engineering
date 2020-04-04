@@ -1,34 +1,43 @@
-package app;
+package acs;
 
-public class ActionId {
-	
+public class ElementID {
 	private String domain;
-	private int id;
+	private String id;
 	
-	public ActionId() {
+	
+	public ElementID() {
 		
 	}
 
-	public ActionId(String domain, int id) {
-		super();
+
+	public ElementID(String domain,String id) {
 		this.domain = domain;
 		this.id = id;
 	}
+
 
 	public String getDomain() {
 		return domain;
 	}
 
+
 	public void setDomain(String domain) {
 		this.domain = domain;
 	}
 
-	public int getId() {
+
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+
+	public void setId(String id) {
 		this.id = id;
 	}
 	
+	
+	
+	
+	
+
 }
