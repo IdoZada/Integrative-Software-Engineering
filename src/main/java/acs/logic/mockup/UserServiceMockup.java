@@ -1,17 +1,19 @@
 package acs.logic.mockup;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import acs.*;
 import acs.boundary.UserBoundary;
+import acs.data.UserEntity;
 import acs.logic.UserService;
 
 public class UserServiceMockup implements UserService{
 
 	private static long id = 1000;
-	private Map<UserId,UserBoundary> users = new ConcurrentHashMap<>();
+	private Map<String,UserEntity> users = new ConcurrentHashMap<>();
 	
 	@Override
 	public UserBoundary createUser(UserBoundary user) {
@@ -34,14 +36,22 @@ public class UserServiceMockup implements UserService{
 
 	@Override
 	public UserBoundary updateUser(String userDomain, String userEmail, UserBoundary update) {
-		// TODO Auto-generated method stub
-		return null;
+		if(!users.containsKey(userDomain + "@@" + userEmail))
+			throw new RuntimeException("User does not exist");
+		UserBoundary userBoundary = new UserBoundary(update.getRole(), update.getUserName(), new UserId(userDomain, userEmail), update.getAvatar());
+		users.get(userDomain + "@@" + userEmail).setAvatar(update.getAvatar());
+		users.get(userDomain + "@@" + userEmail).setRole(update.getRole());
+		users.get(userDomain + "@@" + userEmail).setUserName(update.getUserName());
+		return userBoundary;
 	}
 
 	@Override
 	public List<UserBoundary> getAllUsers(String admainDomain, String admainEmail) {
-		// TODO Auto-generated method stub
-		return null;
+		List<UserBoundary> allUsers = new ArrayList<>();
+		for(UserEntity userEntity : users.values()) {
+			allUsers.add(new UserBoundary(userEntity.getRole(), userEntity.getUserName(), userEntity.getUserId(), userEntity.getAvatar()));
+		}
+		return allUsers;
 	}
 
 	@Override
