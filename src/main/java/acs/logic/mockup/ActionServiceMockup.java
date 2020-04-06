@@ -43,7 +43,7 @@ public class ActionServiceMockup implements ActionService {
 									 action.getInvokedBy(),
 									 action.getAttributes());
 		
-		actionDatabase.put(actionInvoked.getActionId().getId(), actionInvoked);
+		actionDatabase.put((actionInvoked.getActionId().getDomain() + "@@" + actionInvoked.getActionId().getId()), actionInvoked);
 		return actionInvoked;
 	}
 
