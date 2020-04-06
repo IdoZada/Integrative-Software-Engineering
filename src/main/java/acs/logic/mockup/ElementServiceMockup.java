@@ -64,8 +64,8 @@ public class ElementServiceMockup implements ElementService {
 	@Override
 	public ElementBoundary getSpecificElement(String userDomain, String userEmail, String elementDomain,
 			String elementId) {
-		ElementEntity specificElement = ElementDatabase.get(elementId);
-		return new ElementBoundary(new ElementID(elementDomain, elementId),
+		ElementEntity specificElement = ElementDatabase.get(userDomain+"@@"+userEmail+"@@"+elementId);
+		return new ElementBoundary(specificElement.getElementId(),
 				specificElement.getType(), 
 				specificElement.isActive(),
 				specificElement.getName(),
