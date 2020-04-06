@@ -21,7 +21,6 @@ public class ActionBoundary {
 	}
 
 	public ActionBoundary(ActionId actionId, String type, ElementID elementId, Date timeStamp, UserId invokedBy,Map<String, Object> attributes) {
-		super();
 		this.actionId = actionId;
 		Type = type;
 		this.elementId = elementId;
@@ -77,6 +76,4 @@ public class ActionBoundary {
 	public void setAttributes(Map<String, Object> attributes) {
 		this.attributes = attributes;
 	}
-
-	
 }

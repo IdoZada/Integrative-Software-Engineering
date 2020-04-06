@@ -3,14 +3,13 @@ package acs;
 public class ActionId {
 	
 	private String domain;
-	private int id;
+	private String id;
 	
 	public ActionId() {
 		
 	}
 
-	public ActionId(String domain, int id) {
-		super();
+	public ActionId(String domain, String id) {
 		this.domain = domain;
 		this.id = id;
 	}
@@ -23,11 +22,11 @@ public class ActionId {
 		this.domain = domain;
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	
