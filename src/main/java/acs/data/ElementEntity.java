@@ -2,43 +2,40 @@ package acs.data;
 
 import java.util.Date;
 import java.util.Map;
-
-import acs.CreatedBy;
-import acs.ElementID;
 import acs.Location;
 
 public class ElementEntity {
 	
-	private ElementID elementId;
+	private String elementId;
 	private String type;
 	private String name;
 	private boolean active;
-	private Date timeStamp;
-	private CreatedBy createdBy;
-	private Location location;
-	private Map<String,Object> attributes;
+	private Date createdTimestamp;
+	private String createdBy;
+	private String location;
+	private Map<String,Object> elementAttributes;
 	
 	public ElementEntity() {
 		
 	}
 
-	public ElementEntity(ElementID elementId, String type, String name, boolean active, Date timeStamp,
-			CreatedBy createdBy, Location location, Map<String, Object> attributes) {
+	public ElementEntity(String elementId, String type, String name, boolean active, Date createdTimestamp,
+			String createdBy, String location, Map<String, Object> elementAttributes) {
 		this.elementId = elementId;
 		this.type = type;
 		this.name = name;
 		this.active = active;
-		this.timeStamp = timeStamp;
+		this.createdTimestamp = createdTimestamp;
 		this.createdBy = createdBy;
 		this.location = location;
-		this.attributes = attributes;
+		this.elementAttributes = elementAttributes;
 	}
 
-	public ElementID getElementId() {
+	public String getElementId() {
 		return elementId;
 	}
 
-	public void setElementId(ElementID elementId) {
+	public void setElementId(String elementId) {
 		this.elementId = elementId;
 	}
 
@@ -58,7 +55,7 @@ public class ElementEntity {
 		this.name = name;
 	}
 
-	public boolean isActive() {
+	public boolean getActive() {
 		return active;
 	}
 
@@ -66,36 +63,36 @@ public class ElementEntity {
 		this.active = active;
 	}
 
-	public Date getTimeStamp() {
-		return timeStamp;
+	public Date getCreatedTimestamp() {
+		return createdTimestamp;
 	}
 
-	public void setTimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setCreatedTimestamp(Date createdTimestamp) {
+		this.createdTimestamp = createdTimestamp;
 	}
 
-	public CreatedBy getCreatedBy() {
+	public String getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(CreatedBy createdBy) {
+	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
 
-	public Location getLocation() {
+	public String getLocation() {
 		return location;
 	}
 
-	public void setLocation(Location location) {
+	public void setLocation(String location) {
 		this.location = location;
 	}
 
-	public Map<String, Object> getAttributes() {
-		return attributes;
+	public Map<String, Object> getElementAttributes() {
+		return elementAttributes;
 	}
 
-	public void setAttributes(Map<String, Object> attributes) {
-		this.attributes = attributes;
+	public void setElementAttributes(Map<String, Object> elementAttributes) {
+		this.elementAttributes = elementAttributes;
 	}
 	
 	

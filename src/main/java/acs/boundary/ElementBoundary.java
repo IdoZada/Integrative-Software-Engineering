@@ -12,10 +12,10 @@ public class ElementBoundary {
 	private String type;
 	private String name;
 	private Boolean active;
-	private Date timeStamp;
+	private Date createdTimestamp;
 	private CreatedBy createdBy;
 	private Location location;
-	private Map<String,Object> attributes;
+	private Map<String,Object> elementAttributes;
 	
 	
 
@@ -23,15 +23,15 @@ public class ElementBoundary {
 	}
 	
 
-	public ElementBoundary(ElementID elementId, String type, Boolean active,String name, Date timeStamp, CreatedBy createdBy,Location location,Map<String,Object> attributes) {
+	public ElementBoundary(ElementID elementId, String type, Boolean active,String name, Date createdTimestamp, CreatedBy createdBy,Location location,Map<String,Object> elementAttributes) {
 		this.elementId = elementId;
 		this.type = type;
 		this.active = active;
 		this.name = name;
-		this.timeStamp = timeStamp;
+		this.createdTimestamp = createdTimestamp;
 		this.createdBy = createdBy;
 		this.location = location;
-		this.attributes = attributes;
+		this.elementAttributes = elementAttributes;
 	}
 	
 	
@@ -51,7 +51,7 @@ public class ElementBoundary {
 		this.type = type;
 	}
 
-	public Boolean isActive() {
+	public Boolean getActive() {
 		return active;
 	}
 
@@ -76,23 +76,23 @@ public class ElementBoundary {
 	}
 
 	
-	public Map<String, Object> getAttributes() {
-		return attributes;
+	public Map<String, Object> getElementAttributes() {
+		return elementAttributes;
 	}
 
 
-	public void setAttributes(Map<String, Object> attributes) {
-		this.attributes = attributes;
+	public void setElementAttributes(Map<String, Object> elementAttributes) {
+		this.elementAttributes = elementAttributes;
 	}
 
 	
-	public Date getTimeStamp() {
-		return timeStamp;
+	public Date getCreatedTimestamp() {
+		return createdTimestamp;
 	}
 
 
-	public void setTimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setCreatedTimestamp(Date createdTimestamp) {
+		this.createdTimestamp = createdTimestamp;
 	}
 
 
