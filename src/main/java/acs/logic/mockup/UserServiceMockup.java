@@ -12,25 +12,34 @@ import acs.logic.UserService;
 
 public class UserServiceMockup implements UserService{
 
-	private static long id = 1000;
 	private Map<String,UserEntity> users = new ConcurrentHashMap<>();
 	
 	@Override
 	public UserBoundary createUser(UserBoundary user) {
-		//TODO: check if need to change UserBoundry param to NewUserDetails
-		if(users.containsKey(user.getUserId())){
+		String domain = user.getUserId().getDomain();
+		String email = user.getUserId().getEmail();
+		if(users.containsKey(domain + "@@" + email)){
 			throw new RuntimeException("User Already exist");
 		}
-		users.put(user.getUserId(), user);
+		UserEntity userEntity = new UserEntity();
+		userEntity.setUserId(user.getUserId());
+		userEntity.setRole(user.getRole());
+		userEntity.setAvatar(user.getAvatar());
+		userEntity.setUserName(user.getUserName());
+		users.put(domain + "&&" + email,userEntity);
 		return user;
 	}
 
 	@Override
 	public UserBoundary login(String userDomain, String userEmail) {
-		UserId userId = new UserId(userDomain, userEmail);
-		UserBoundary result = users.get(userId);
-		if(result == null)
+		UserEntity entity = users.get(userDomain + "@@" + userEmail);
+		if(entity == null)
 			throw new RuntimeException("User Does not exist");
+		UserBoundary result = new UserBoundary();
+		result.setAvatar(entity.getAvatar());
+		result.setRole(entity.getRole());
+		result.setUserId(entity.getUserId());
+		result.setUserName(entity.getUserName());
 		return result;
 	}
 
