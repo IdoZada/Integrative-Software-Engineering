@@ -6,7 +6,6 @@ import acs.ElementID;
 import acs.InvokedBy;
 import acs.UserId;
 import acs.boundary.ActionBoundary;
-import acs.boundary.UserBoundary;
 import acs.data.ActionEntity;
 
 public class ActionEntityConverter {
