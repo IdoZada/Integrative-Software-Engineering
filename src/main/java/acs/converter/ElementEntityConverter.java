@@ -1,4 +1,4 @@
-package acs.data;
+package acs.converter;
 
 import org.springframework.stereotype.Component;
 import acs.CreatedBy;
@@ -6,6 +6,7 @@ import acs.ElementID;
 import acs.Location;
 import acs.UserId;
 import acs.boundary.ElementBoundary;
+import acs.data.ElementEntity;
 
 @Component
 public class ElementEntityConverter {
