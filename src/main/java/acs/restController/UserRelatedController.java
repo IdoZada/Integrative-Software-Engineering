@@ -1,5 +1,6 @@
 package acs.restController;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,43 +11,38 @@ import org.springframework.web.bind.annotation.RestController;
 import acs.NewUserDetails;
 import acs.UserId;
 import acs.boundary.UserBoundary;
-import acs.data.UserRole;
+import acs.logic.UserService;
 
 @RestController
 public class UserRelatedController {
+	
+	private UserService userService;
+	
+	@Autowired
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
 
 	@RequestMapping(path = "/acs/users",
 			method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	
-	public UserBoundary newUser (@RequestBody NewUserDetails newUserDetails) {
-		return new UserBoundary (newUserDetails.getRole(), newUserDetails.getUserName(),
-				new UserId(newUserDetails.getEmail(), "2020b"), ":-)");
+	public UserBoundary newUser (@RequestBody NewUserDetails newUserDetails) {//TODO check about what argument the method receive
+		UserBoundary userBoudary = new UserBoundary(
+													newUserDetails.getRole(),newUserDetails.getUserName(),
+													new UserId("2020b.daniel.zusev",
+													newUserDetails.getEmail()),
+													newUserDetails.getAvatar());
+		return this.userService.createUser(userBoudary);
 	}
 	
 	@RequestMapping(path = "/acs/users/login/{userDomain}/{userEmail}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	
-	public UserBoundary retrieveUserDetails (
-			@PathVariable("userDomain") String userDomain
-			,@PathVariable("userEmail") String userEmail ) {
-		UserBoundary userBoundary = new UserBoundary(
-				UserRole.PLAYER, "Tomer"
-				, new UserId("tomer@gmail.com", "2020t"),":-)");
-		
-		if(userDomain.equals(userBoundary.getUserId().getDomain())
-				&& userEmail.equals(userBoundary.getUserId().getEmail())) {
-			
-			return userBoundary;
-			
-		}else {
-			
-			return new UserBoundary();
-			
-		}
-		
+	public UserBoundary retrieveUserDetails (@PathVariable("userDomain") String userDomain,@PathVariable("userEmail") String userEmail ) {
+		 return this.userService.login(userDomain, userEmail);
 	}
 	
 	
@@ -58,14 +54,7 @@ public class UserRelatedController {
 			@RequestBody UserBoundary userBoundary
 			, @PathVariable("userDomain") String userDomain
 			, @PathVariable("userEmail") String userEmail) {
-		
-		 UserBoundary updateUsBoundary = new UserBoundary (
-				userBoundary.getRole()
-				, userBoundary.getUserName(),
-				new UserId(userBoundary.getUserId().getEmail(), userBoundary.getUserId().getDomain()),":-P");
-		 
-		 UserId userId = new UserId(userEmail, userDomain);
-		 updateUsBoundary.setUserId(userId);
+
+		this.userService.updateUser(userDomain, userEmail, userBoundary);
 	}
-	
 }

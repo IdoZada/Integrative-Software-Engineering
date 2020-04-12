@@ -4,29 +4,29 @@ import java.util.Date;
 import java.util.Map;
 
 import acs.ActionId;
-import acs.ElementID;
-import acs.UserId;
+import acs.Element;
+import acs.InvokedBy;
 
 public class ActionBoundary {
 	
 	private ActionId actionId;
-	private String Type;
-	private ElementID elementId;
-	private Date timeStamp;
-	private UserId invokedBy;
-	private Map<String, Object> attributes;
+	private String type;
+	private Element element;
+	private Date createdTimeStamp;
+	private InvokedBy invokedBy;
+	private Map<String, Object> actionAttributes;
 
 	public ActionBoundary() {
 		
 	}
 
-	public ActionBoundary(ActionId actionId, String type, ElementID elementId, Date timeStamp, UserId invokedBy,Map<String, Object> attributes) {
+	public ActionBoundary(ActionId actionId, String type, Element element, Date createdTimeStamp, InvokedBy invokedBy,Map<String, Object> actionAttributes) {
 		this.actionId = actionId;
-		Type = type;
-		this.elementId = elementId;
-		this.timeStamp = timeStamp;
+		this.type = type;
+		this.element = element;
+		this.createdTimeStamp = createdTimeStamp;
 		this.invokedBy = invokedBy;
-		this.attributes = attributes;
+		this.actionAttributes = actionAttributes;
 	}
 
 	public ActionId getActionId() {
@@ -38,42 +38,44 @@ public class ActionBoundary {
 	}
 
 	public String getType() {
-		return Type;
+		return type;
 	}
 
 	public void setType(String type) {
-		Type = type;
+		this.type = type;
 	}
 
-	public ElementID getElementId() {
-		return elementId;
+	public Element getElement() {
+		return element;
 	}
 
-	public void setElementId(ElementID elementId) {
-		this.elementId = elementId;
+	public void setElement(Element element) {
+		this.element = element;
 	}
 
-	public Date getTimeStamp() {
-		return timeStamp;
+	public Date getCreatedTimeStamp() {
+		return createdTimeStamp;
 	}
 
-	public void setTimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setCreatedTimeStamp(Date createdTimeStamp) {
+		this.createdTimeStamp = createdTimeStamp;
 	}
 
-	public UserId getInvokedBy() {
+	public InvokedBy getInvokedBy() {
 		return invokedBy;
 	}
 
-	public void setInvokedBy(UserId invokedBy) {
+	public void setInvokedBy(InvokedBy invokedBy) {
 		this.invokedBy = invokedBy;
 	}
 
-	public Map<String, Object> getAttributes() {
-		return attributes;
+	public Map<String, Object> getActionAttributes() {
+		return actionAttributes;
 	}
 
-	public void setAttributes(Map<String, Object> attributes) {
-		this.attributes = attributes;
+	public void setActionAttributes(Map<String, Object> actionAttributes) {
+		this.actionAttributes = actionAttributes;
 	}
+
+	
 }

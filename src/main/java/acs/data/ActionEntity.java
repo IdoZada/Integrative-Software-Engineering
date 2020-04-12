@@ -3,77 +3,76 @@ package acs.data;
 import java.util.Date;
 import java.util.Map;
 
-import acs.ActionId;
-import acs.ElementID;
-import acs.UserId;
 
 public class ActionEntity {
 	
-	private ActionId actionId;
-	private String Type;
-	private ElementID elementId;
-	private Date timeStamp;
-	private UserId invokedBy;
-	private Map<String, Object> attributes;
+	private String actionId;
+	private String type;
+	private String element;
+	private Date createdTimeStamp;
+	private String invokedBy;
+	private Map<String, Object> actionAttributes;
 	
 	public ActionEntity() {
 	
 	}
 
-	public ActionEntity(ActionId actionId, String type, ElementID elementId, Date timeStamp, UserId invokedBy,Map<String, Object> attributes) {
+	public ActionEntity(String actionId, String type, String element, Date createdTimeStamp, String invokedBy,Map<String, Object> actionAttributes) {
 		this.actionId = actionId;
-		this.Type = type;
-		this.elementId = elementId;
-		this.timeStamp = timeStamp;
+		this.type = type;
+		this.element = element;
+		this.createdTimeStamp = createdTimeStamp;
 		this.invokedBy = invokedBy;
-		this.attributes = attributes;
+		this.actionAttributes = actionAttributes;
 	}
 
-	public ActionId getActionId() {
+	public String getActionId() {
 		return actionId;
 	}
 
-	public void setActionId(ActionId actionId) {
+	public void setActionId(String actionId) {
 		this.actionId = actionId;
 	}
 
 	public String getType() {
-		return Type;
+		return type;
 	}
 
 	public void setType(String type) {
-		Type = type;
+		this.type = type;
 	}
 
-	public ElementID getElementId() {
-		return elementId;
+	public String getElement() {
+		return element;
 	}
 
-	public void setElementId(ElementID elementId) {
-		this.elementId = elementId;
+	public void setElement(String element) {
+		this.element = element;
 	}
 
-	public Date getTimeStamp() {
-		return timeStamp;
+	public Date getCreatedTimeStamp() {
+		return createdTimeStamp;
 	}
 
-	public void setTimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setCreatedTimeStamp(Date createdTimeStamp) {
+		this.createdTimeStamp = createdTimeStamp;
 	}
 
-	public UserId getInvokedBy() {
+	public String getInvokedBy() {
 		return invokedBy;
 	}
 
-	public void setInvokedBy(UserId invokedBy) {
+	public void setInvokedBy(String invokedBy) {
 		this.invokedBy = invokedBy;
 	}
 
-	public Map<String, Object> getAttributes() {
-		return attributes;
+	public Map<String, Object> getActionAttributes() {
+		return actionAttributes;
 	}
 
-	public void setAttributes(Map<String, Object> attributes) {
-		this.attributes = attributes;
+	public void setActionAttributes(Map<String, Object> actionAttributes) {
+		this.actionAttributes = actionAttributes;
 	}
+
+	
 }

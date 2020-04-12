@@ -6,14 +6,14 @@ public class UserEntity {
 	
 	private UserRole role;
 	private String userName;
-	private UserId userId;
+	private String userId;
 	private String avatar;
 	
 	public UserEntity() {
 		
 	}
 	
-	public UserEntity(UserRole role, String userName, UserId userId, String avatar) {
+	public UserEntity(UserRole role, String userName, String userId, String avatar) {
 		this.role = role;
 		this.userName = userName;
 		this.userId = userId;
@@ -36,11 +36,11 @@ public class UserEntity {
 		this.userName = userName;
 	}
 
-	public UserId getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(UserId userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

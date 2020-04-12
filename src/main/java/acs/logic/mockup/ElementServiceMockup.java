@@ -29,7 +29,7 @@ public class ElementServiceMockup implements ElementService {
 	}
 	
 	// inject value from configuration or use default value
-	@Value("${spring.application.name:demo}") 
+	@Value("${spring.application.name:2020b.daniel.zusev}") 
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
@@ -41,14 +41,17 @@ public class ElementServiceMockup implements ElementService {
 
 	@Override
 	public ElementBoundary create(String managerDomain, String managerEmail, ElementBoundary element) {
-		// TODO Auto-generated method stub
-		return null;
+		ElementEntity elementEntity = elementEntityConverter.toEntity(element);
+		ElementDatabase.put(elementEntity.getElementId(), elementEntity);
+		return element;
+
 	}
 
 	@Override
 	public ElementBoundary update(String managerDomain, String managerEmail, String elementId, ElementBoundary update) {
-		// TODO Auto-generated method stub
-		return null;
+		ElementEntity elementEntity = elementEntityConverter.toEntity(update);
+		ElementDatabase.put(elementEntity.getElementId(), elementEntity);
+		return update;
 	}
 
 	@Override
