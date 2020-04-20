@@ -2,7 +2,6 @@ package acs.data;
 
 import java.util.Date;
 import java.util.Map;
-import acs.Location;
 
 public class ElementEntity {
 	

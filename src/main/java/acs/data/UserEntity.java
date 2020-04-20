@@ -1,7 +1,5 @@
 package acs.data;
 
-import acs.*;
-
 public class UserEntity {
 	
 	private UserRole role;
