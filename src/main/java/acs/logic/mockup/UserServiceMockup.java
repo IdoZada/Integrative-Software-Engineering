@@ -11,12 +11,14 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import acs.boundary.UserBoundary;
 import acs.converter.UserEntityConverter;
 import acs.data.UserEntity;
 import acs.logic.UserService;
 
+@Service
 public class UserServiceMockup implements UserService{
 	
 	private String projectName;
