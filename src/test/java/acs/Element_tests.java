@@ -1,4 +1,4 @@
-package app;
+package acs;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +13,7 @@ import acs.Application;
 import javax.annotation.PostConstruct;
 
 
-@SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class Element_tests {
 	private int port;
 	private String url;
