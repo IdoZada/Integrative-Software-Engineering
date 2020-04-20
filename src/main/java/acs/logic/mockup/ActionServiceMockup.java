@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import acs.ActionId;
 import acs.boundary.ActionBoundary;
 import acs.converter.ActionEntityConverter;
 import acs.data.ActionEntity;
@@ -42,7 +44,7 @@ public class ActionServiceMockup implements ActionService {
 
 	@Override
 	public Object invokeAction(ActionBoundary action) { //action have actionId = null
-		
+		action.setActionId(new ActionId(this.projectName, UUID.randomUUID().toString()));
 		ActionEntity actionInvoked = actionEntityConverter.toEntity(action);
 		actionInvoked.setCreatedTimeStamp(new Date());
 		actionDatabase.put(actionInvoked.getActionId(), actionInvoked);

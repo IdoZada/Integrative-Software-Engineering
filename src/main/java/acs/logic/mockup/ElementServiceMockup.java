@@ -2,6 +2,7 @@ package acs.logic.mockup;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import acs.ElementID;
 import acs.boundary.ElementBoundary;
 import acs.converter.ElementEntityConverter;
 import acs.data.ElementEntity;
@@ -41,6 +43,8 @@ public class ElementServiceMockup implements ElementService {
 
 	@Override
 	public ElementBoundary create(String managerDomain, String managerEmail, ElementBoundary element) {
+		element.setElementId(new ElementID(this.projectName, element.getElementId().getId()));
+		element.setCreatedTimestamp(new Date());
 		ElementEntity elementEntity = elementEntityConverter.toEntity(element);
 		ElementDatabase.put(elementEntity.getElementId(), elementEntity);
 		return element;
@@ -49,8 +53,40 @@ public class ElementServiceMockup implements ElementService {
 
 	@Override
 	public ElementBoundary update(String managerDomain, String managerEmail, String elementId, ElementBoundary update) {
+		boolean dirtyFlag = false;
 		ElementEntity elementEntity = elementEntityConverter.toEntity(update);
-		ElementDatabase.put(elementEntity.getElementId(), elementEntity);
+		ElementBoundary existing = elementEntityConverter.fromEntity(ElementDatabase.get(elementEntity.getElementId()));
+		
+		if(update.getType() != null) {
+			dirtyFlag = true;
+			existing.setType(update.getType());
+		}
+		
+		if(update.getName() != null) {
+			dirtyFlag = true;
+			existing.setName(update.getName());
+		}
+		
+		if(update.getActive() != null) {
+			dirtyFlag = true;
+			existing.setActive(update.getActive());
+		}
+		
+		if(update.getLocation() != null) {
+			dirtyFlag = true;
+			existing.setLocation(update.getLocation());
+		}
+		
+		if(update.getElementAttributes() != null) {
+			dirtyFlag = true;
+			existing.setElementAttributes(update.getElementAttributes());
+		}
+			
+		if(dirtyFlag) {
+			elementEntity.setCreatedTimestamp(new Date());
+			ElementDatabase.put(elementEntity.getElementId(), elementEntity);
+		}
+			
 		return update;
 	}
 

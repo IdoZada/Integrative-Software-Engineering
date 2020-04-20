@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import acs.UserId;
 import acs.boundary.UserBoundary;
 import acs.converter.UserEntityConverter;
 import acs.data.UserEntity;
@@ -44,6 +44,7 @@ public class UserServiceMockup implements UserService{
 	
 	@Override
 	public UserBoundary createUser(UserBoundary user) {
+		user.setUserId(new UserId(this.projectName, user.getUserId().getEmail()));
 		UserEntity userEntity = userEntityConverter.toEntity(user); 
 		usersDatabase.put(userEntity.getUserId(), userEntity);
 		return user;
@@ -58,8 +59,27 @@ public class UserServiceMockup implements UserService{
 
 	@Override
 	public UserBoundary updateUser(String userDomain, String userEmail, UserBoundary update) {
-		UserEntity userEntity = userEntityConverter.toEntity(update); 
-		usersDatabase.put(userEntity.getUserId(), userEntity);
+		boolean dirtyFlag = false;
+		UserEntity userEntity = userEntityConverter.toEntity(update);
+		UserBoundary existing = userEntityConverter.fromEntity(usersDatabase.get(userEntity.getUserId()));
+		if(update.getAvatar() != null) {
+			dirtyFlag = true;	
+			existing.setAvatar(update.getAvatar());
+		}
+		
+		if(update.getUserName() != null) {
+			dirtyFlag = true;
+			existing.setUserName(update.getUserName());
+		}
+		
+		if(update.getUserId().getEmail() != null) {
+			dirtyFlag = true;
+			existing.setUserId(new UserId(this.projectName, update.getUserId().getEmail()));
+		}
+		 
+		if(dirtyFlag)
+			usersDatabase.put(userEntity.getUserId(), userEntity);
+		
 		return update;
 	}
 
