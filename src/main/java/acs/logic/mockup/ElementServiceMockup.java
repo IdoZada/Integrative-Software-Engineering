@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -43,7 +44,8 @@ public class ElementServiceMockup implements ElementService {
 
 	@Override
 	public ElementBoundary create(String managerDomain, String managerEmail, ElementBoundary element) {
-		element.setElementId(new ElementID(this.projectName, element.getElementId().getId()));
+		String elementId = UUID.randomUUID().toString();
+		element.setElementId(new ElementID(this.projectName, elementId));
 		element.setCreatedTimestamp(new Date());
 		ElementEntity elementEntity = elementEntityConverter.toEntity(element);
 		ElementDatabase.put(elementEntity.getElementId(), elementEntity);
