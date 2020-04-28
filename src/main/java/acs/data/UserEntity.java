@@ -1,5 +1,11 @@
 package acs.data;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="USERS")
 public class UserEntity {
 	
 	private UserRole role;
@@ -33,7 +39,7 @@ public class UserEntity {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-
+	@Id
 	public String getUserId() {
 		return userId;
 	}

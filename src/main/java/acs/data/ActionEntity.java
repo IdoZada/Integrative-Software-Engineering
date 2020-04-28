@@ -3,7 +3,16 @@ package acs.data;
 import java.util.Date;
 import java.util.Map;
 
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Table;
 
+import acs.dal.MapToJsonConverter;
+
+@Entity
+@Table(name="ACTIONS")
 public class ActionEntity {
 	
 	private String actionId;
@@ -25,7 +34,7 @@ public class ActionEntity {
 		this.invokedBy = invokedBy;
 		this.actionAttributes = actionAttributes;
 	}
-
+	@Id
 	public String getActionId() {
 		return actionId;
 	}
@@ -65,7 +74,8 @@ public class ActionEntity {
 	public void setInvokedBy(String invokedBy) {
 		this.invokedBy = invokedBy;
 	}
-
+	@Convert(converter = MapToJsonConverter.class)
+	@Lob
 	public Map<String, Object> getActionAttributes() {
 		return actionAttributes;
 	}

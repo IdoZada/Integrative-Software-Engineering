@@ -3,6 +3,16 @@ package acs.data;
 import java.util.Date;
 import java.util.Map;
 
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+
+import acs.dal.MapToJsonConverter;
+
+@Entity
+@Table(name="ELEMENTS")
 public class ElementEntity {
 	
 	private String elementId;
@@ -29,7 +39,7 @@ public class ElementEntity {
 		this.location = location;
 		this.elementAttributes = elementAttributes;
 	}
-
+	@Id
 	public String getElementId() {
 		return elementId;
 	}
@@ -85,7 +95,8 @@ public class ElementEntity {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-
+	@Convert(converter = MapToJsonConverter.class)
+	@Lob
 	public Map<String, Object> getElementAttributes() {
 		return elementAttributes;
 	}
