@@ -1,16 +1,16 @@
 package acs;
 
-public class ElementID {
+public class ElementId {
 	private String domain;
 	private String id;
 	
 	
-	public ElementID() {
+	public ElementId() {
 		
 	}
 
 
-	public ElementID(String domain,String id) {
+	public ElementId(String domain,String id) {
 		this.domain = domain;
 		this.id = id;
 	}

@@ -19,33 +19,32 @@ import acs.data.UserEntity;
 import acs.logic.UserService;
 
 @Service
-public class UserServiceMockup implements UserService{
-	
+public class UserServiceMockup implements UserService {
+
 	private String projectName;
 	private UserEntityConverter userEntityConverter;
-	private Map<String,UserEntity> usersDatabase;
-	
+	private Map<String, UserEntity> usersDatabase;
+
 	@Autowired
 	public UserServiceMockup(UserEntityConverter userEntityConverter) {
 		this.userEntityConverter = userEntityConverter;
 	}
-	
+
 	// inject value from configuration or use default value
-		@Value("${spring.application.name:2020b.daniel.zusev}") 
-		public void setProjectName(String projectName) {
-			this.projectName = projectName;
-		}
-	
+	@Value("${spring.application.name:2020b.daniel.zusev}")
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
 	@PostConstruct
 	public void init() {
 		this.usersDatabase = Collections.synchronizedMap(new TreeMap<>());
 	}
 
-	
 	@Override
 	public UserBoundary createUser(UserBoundary user) {
 		user.setUserId(new UserId(this.projectName, user.getUserId().getEmail()));
-		UserEntity userEntity = userEntityConverter.toEntity(user); 
+		UserEntity userEntity = userEntityConverter.toEntity(user);
 		usersDatabase.put(userEntity.getUserId(), userEntity);
 		return user;
 	}
@@ -60,33 +59,37 @@ public class UserServiceMockup implements UserService{
 	@Override
 	public UserBoundary updateUser(String userDomain, String userEmail, UserBoundary update) {
 		boolean dirtyFlag = false;
-		UserEntity userEntity = userEntityConverter.toEntity(update);
-		UserBoundary existing = userEntityConverter.fromEntity(usersDatabase.get(userEntity.getUserId()));
-		if(update.getAvatar() != null) {
-			dirtyFlag = true;	
-			existing.setAvatar(update.getAvatar());
+		if(usersDatabase.get(userDomain+"@@"+userEmail) == null) {
+			System.err.println("There Is No Such User In The System");
+			return update;
 		}
 		
-		if(update.getUserName() != null) {
+		UserEntity userEntity = userEntityConverter.toEntity(update);
+		UserBoundary existing = userEntityConverter.fromEntity(usersDatabase.get(userEntity.getUserId()));
+		if (update.getAvatar() != null) {
+			dirtyFlag = true;
+			existing.setAvatar(update.getAvatar());
+		}
+
+		if (update.getUserName() != null) {
 			dirtyFlag = true;
 			existing.setUserName(update.getUserName());
 		}
 		
-		if(update.getUserId().getEmail() != null) {
+		if (update.getRole() != null) {
 			dirtyFlag = true;
-			existing.setUserId(new UserId(this.projectName, update.getUserId().getEmail()));
+			existing.setRole(update.getRole());
 		}
-		 
-		if(dirtyFlag)
-			usersDatabase.put(userEntity.getUserId(), userEntity);
-		
-		return update;
+
+		if (dirtyFlag)
+			usersDatabase.put(userEntity.getUserId(), userEntityConverter.toEntity(existing));
+		return existing;
 	}
 
 	@Override
 	public List<UserBoundary> getAllUsers(String admainDomain, String admainEmail) {
 		List<UserBoundary> allUsers = new ArrayList<>();
-		for(UserEntity userEntity : usersDatabase.values()) 
+		for (UserEntity userEntity : usersDatabase.values())
 			allUsers.add(userEntityConverter.fromEntity(userEntity));
 		return allUsers;
 	}

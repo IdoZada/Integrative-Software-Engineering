@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import acs.ActionId;
 import acs.Element;
-import acs.ElementID;
+import acs.ElementId;
 import acs.InvokedBy;
 import acs.UserId;
 import acs.boundary.ActionBoundary;
@@ -25,7 +25,7 @@ public class ActionEntityConverter {
 		Element element;
 		if(actionEntity.getElement() != null) {
 			String[] elementParts = actionEntity.getElement().split("@@");
-			element = new Element(new ElementID(elementParts[0], elementParts[1]));
+			element = new Element(new ElementId(elementParts[0], elementParts[1]));
 		}
 		else
 			element = null;

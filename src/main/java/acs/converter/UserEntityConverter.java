@@ -41,7 +41,7 @@ public class UserEntityConverter {
 		userEntity.setAvatar(userBoundary.getAvatar());
 		userEntity.setRole(userBoundary.getRole());
 		
-		return new UserEntity();
+		return userEntity;
 	}
 
 }

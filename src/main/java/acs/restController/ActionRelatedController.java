@@ -20,7 +20,7 @@ public class ActionRelatedController {
 		this.actionService = actionService;
 	}
 	
-	@RequestMapping(path = "/acs/action",
+	@RequestMapping(path = "/acs/actions",
 					method = RequestMethod.POST,
 					produces = MediaType.APPLICATION_JSON_VALUE,
 					consumes = MediaType.APPLICATION_JSON_VALUE)

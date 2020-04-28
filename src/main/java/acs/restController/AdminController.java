@@ -57,16 +57,16 @@ public class AdminController {
 	@RequestMapping(path = "/acs/admin/users/{adminDomain}/{adminEmail}",
 				method = RequestMethod.GET,
 				produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<UserBoundary> exportAllusers(@PathVariable("adminDomain") String domain, @PathVariable("adminEmail") String email){
+	public UserBoundary[] exportAllusers(@PathVariable("adminDomain") String domain, @PathVariable("adminEmail") String email){
 		
-		return this.userService.getAllUsers(domain, email);
+		return this.userService.getAllUsers(domain, email).toArray(new UserBoundary[0]);
 	}
 	
 	@RequestMapping(path = "/acs/admin/actions/{adminDomain}/{adminEmail}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<ActionBoundary> exportAllActions(@PathVariable("adminDomain") String domain, @PathVariable("adminEmail") String email){
+	public ActionBoundary[] exportAllActions(@PathVariable("adminDomain") String domain, @PathVariable("adminEmail") String email){
 		
-		return this.actionService.getAllActions(domain, email);
+		return this.actionService.getAllActions(domain, email).toArray(new ActionBoundary[0]);
 	}
 }

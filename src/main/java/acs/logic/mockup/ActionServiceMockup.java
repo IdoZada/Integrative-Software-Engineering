@@ -45,8 +45,9 @@ public class ActionServiceMockup implements ActionService {
 	@Override
 	public Object invokeAction(ActionBoundary action) { //action have actionId = null
 		action.setActionId(new ActionId(this.projectName, UUID.randomUUID().toString()));
+		action.setCreatedTimeStamp(new Date());
 		ActionEntity actionInvoked = actionEntityConverter.toEntity(action);
-		actionInvoked.setCreatedTimeStamp(new Date());
+		actionInvoked.setCreatedTimeStamp(action.getCreatedTimeStamp());
 		actionDatabase.put(actionInvoked.getActionId(), actionInvoked);
 		return actionInvoked;
 	}

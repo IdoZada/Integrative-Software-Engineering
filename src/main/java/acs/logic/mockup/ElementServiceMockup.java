@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import acs.ElementID;
+import acs.CreatedBy;
+import acs.ElementId;
+import acs.UserId;
 import acs.boundary.ElementBoundary;
 import acs.converter.ElementEntityConverter;
 import acs.data.ElementEntity;
@@ -23,7 +25,7 @@ import acs.logic.ElementService;
 @Service
 public class ElementServiceMockup implements ElementService {
 	private String projectName;
-	private Map<String, ElementEntity> ElementDatabase;
+	private Map<String, ElementEntity> elementDatabase;
 	private ElementEntityConverter elementEntityConverter;
 	
 	@Autowired
@@ -39,25 +41,31 @@ public class ElementServiceMockup implements ElementService {
 	
 	@PostConstruct
 	public void init() {
-		this.ElementDatabase = Collections.synchronizedMap(new TreeMap<>());
+		this.elementDatabase = Collections.synchronizedMap(new TreeMap<>());
 	}
 
 	@Override
 	public ElementBoundary create(String managerDomain, String managerEmail, ElementBoundary element) {
 		String elementId = UUID.randomUUID().toString();
-		element.setElementId(new ElementID(this.projectName, elementId));
+		element.setElementId(new ElementId(this.projectName, elementId));
 		element.setCreatedTimestamp(new Date());
+		element.setCreatedBy(new CreatedBy(new UserId(managerDomain,managerEmail)));
 		ElementEntity elementEntity = elementEntityConverter.toEntity(element);
-		ElementDatabase.put(elementEntity.getElementId(), elementEntity);
+		elementDatabase.put(elementEntity.getElementId(), elementEntity);
 		return element;
 
 	}
 
 	@Override
-	public ElementBoundary update(String managerDomain, String managerEmail, String elementId, ElementBoundary update) {
+	public ElementBoundary update(String managerDomain, String managerEmail,String elementDomain, String elementId, ElementBoundary update) {
 		boolean dirtyFlag = false;
+		if (elementDatabase.get(elementDomain + "@@" + elementId) == null) {
+			System.err.println("There Is No Such Element In The System");
+			return update;
+		}
 		ElementEntity elementEntity = elementEntityConverter.toEntity(update);
-		ElementBoundary existing = elementEntityConverter.fromEntity(ElementDatabase.get(elementEntity.getElementId()));
+		ElementBoundary existing = elementEntityConverter.fromEntity(elementDatabase.get(elementEntity.getElementId()));
+		
 		
 		if(update.getType() != null) {
 			dirtyFlag = true;
@@ -85,17 +93,16 @@ public class ElementServiceMockup implements ElementService {
 		}
 			
 		if(dirtyFlag) {
-			elementEntity.setCreatedTimestamp(new Date());
-			ElementDatabase.put(elementEntity.getElementId(), elementEntity);
+			elementDatabase.put(elementEntity.getElementId(), elementEntityConverter.toEntity(existing));
 		}
 			
-		return update;
+		return existing;
 	}
 
 	@Override
 	public List<ElementBoundary> getAll(String userDomain, String userEmail) {
 		List<ElementBoundary> allElement = new ArrayList<>();
-		for (ElementEntity elementEntity : ElementDatabase.values()) {
+		for (ElementEntity elementEntity : elementDatabase.values()) {
 			allElement.add(elementEntityConverter.fromEntity(elementEntity));
 		}
 		return allElement;
@@ -104,13 +111,13 @@ public class ElementServiceMockup implements ElementService {
 	@Override
 	public ElementBoundary getSpecificElement(String userDomain, String userEmail, String elementDomain,
 			String elementId) {
-		ElementEntity specificElement = ElementDatabase.get(elementId);
+		ElementEntity specificElement = elementDatabase.get(elementId);
 		return elementEntityConverter.fromEntity(specificElement);
 		
 	}
 
 	@Override
 	public void deleteAllElements(String adminDomain, String adminEmail) {
-		ElementDatabase.clear();
+		elementDatabase.clear();
 	}
 }

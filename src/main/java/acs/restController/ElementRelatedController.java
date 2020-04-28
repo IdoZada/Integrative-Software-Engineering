@@ -1,6 +1,5 @@
 package acs.restController;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -42,7 +41,7 @@ public class ElementRelatedController {
 	public void updateElement(@RequestBody ElementBoundary elementBoundary,
 			@PathVariable("managerDomain") String managerDomain, @PathVariable("managerEmail") String managerEmail,
 			@PathVariable("elementDomain") String elementDomain, @PathVariable("elementId") String elementId) {
-			this.elementService.update(managerDomain, managerEmail, elementId, elementBoundary);
+			this.elementService.update(managerDomain, managerEmail,elementDomain, elementId, elementBoundary);
 	}
 	
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementId}",
@@ -58,7 +57,7 @@ public class ElementRelatedController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	
-	public List<ElementBoundary> getAllElements(@PathVariable("userDomain") String userDomain, @PathVariable("userEmail") String userEmail) {
-		return this.elementService.getAll(userDomain, userEmail);
+	public ElementBoundary[] getAllElements(@PathVariable("userDomain") String userDomain, @PathVariable("userEmail") String userEmail) {
+		return this.elementService.getAll(userDomain, userEmail).toArray(new ElementBoundary[0]);
 	}
 }

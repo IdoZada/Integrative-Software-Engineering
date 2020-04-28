@@ -4,11 +4,11 @@ import java.util.Date;
 import java.util.Map;
 
 import acs.CreatedBy;
-import acs.ElementID;
+import acs.ElementId;
 import acs.Location;
 
 public class ElementBoundary {
-	private ElementID elementId;
+	private ElementId elementId;
 	private String type;
 	private String name;
 	private Boolean active;
@@ -23,7 +23,7 @@ public class ElementBoundary {
 	}
 	
 
-	public ElementBoundary(ElementID elementId, String type, Boolean active,String name, Date createdTimestamp, CreatedBy createdBy,Location location,Map<String,Object> elementAttributes) {
+	public ElementBoundary(ElementId elementId, String type, Boolean active,String name, Date createdTimestamp, CreatedBy createdBy,Location location,Map<String,Object> elementAttributes) {
 		this.elementId = elementId;
 		this.type = type;
 		this.active = active;
@@ -35,11 +35,11 @@ public class ElementBoundary {
 	}
 	
 	
-	public ElementID getElementId() {
+	public ElementId getElementId() {
 		return elementId;
 	}
 
-	public void setElementId(ElementID elementId) {
+	public void setElementId(ElementId elementId) {
 		this.elementId = elementId;
 	}
 

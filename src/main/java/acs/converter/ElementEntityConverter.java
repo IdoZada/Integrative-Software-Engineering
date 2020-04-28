@@ -2,7 +2,7 @@ package acs.converter;
 
 import org.springframework.stereotype.Component;
 import acs.CreatedBy;
-import acs.ElementID;
+import acs.ElementId;
 import acs.Location;
 import acs.UserId;
 import acs.boundary.ElementBoundary;
@@ -11,10 +11,10 @@ import acs.data.ElementEntity;
 @Component
 public class ElementEntityConverter {
 	public ElementBoundary fromEntity(ElementEntity elementEntity) {
-		ElementID elementID;
+		ElementId elementID;
 		if(elementEntity.getElementId() != null) {
 			String[] elementIdParts = elementEntity.getElementId().split("@@");
-			elementID = new ElementID(elementIdParts[0], elementIdParts[1]);
+			elementID = new ElementId(elementIdParts[0], elementIdParts[1]);
 		}else {
 			elementID = null;
 		}

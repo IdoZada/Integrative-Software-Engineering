@@ -1,21 +1,21 @@
 package acs;
 
 public class Element {
-	private ElementID elementId;
+	private ElementId elementId;
 
 	public Element() {
 		
 	}
 
-	public Element(ElementID elementId) {
+	public Element(ElementId elementId) {
 		this.elementId = elementId;
 	}
 
-	public ElementID getElementId() {
+	public ElementId getElementId() {
 		return elementId;
 	}
 
-	public void setElementId(ElementID elementId) {
+	public void setElementId(ElementId elementId) {
 		this.elementId = elementId;
 	}
 }
