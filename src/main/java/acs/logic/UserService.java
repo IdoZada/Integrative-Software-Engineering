@@ -9,6 +9,6 @@ public interface UserService {
 	public UserBoundary login(String userDomain, String userEmail);
 	public UserBoundary updateUser(String userDomain, String userEmail, UserBoundary update);
 	public List<UserBoundary> getAllUsers(String admainDomain, String admainEmail);
-	public void deleteAllUsers(String admainDomain, String admainEmail);
+	public void deleteAllUsers(String adminDomain, String adminEmail);
 
 }
