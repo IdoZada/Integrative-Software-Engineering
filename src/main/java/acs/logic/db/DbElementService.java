@@ -3,13 +3,14 @@ package acs.logic.db;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
-import acs.ElementId;
 import acs.boundary.ElementBoundary;
 import acs.converter.ElementEntityConverter;
 import acs.dal.ElementDao;
@@ -50,16 +51,43 @@ public class DbElementService implements ElementService{
 	}
 
 	@Override
-	public ElementBoundary update(String managerDomain, String managerEmail, String elementDomain, String elementId,
-			ElementBoundary update) {
-		// TODO Auto-generated method stub
-		return null;
+	@Transactional
+	public ElementBoundary update(String managerDomain, String managerEmail, String elementDomain, String elementId,ElementBoundary update) {
+		
+		ElementBoundary existing = this.getSpecificElement(managerDomain, managerEmail, elementDomain, elementId);
+		
+		if(update.getType() != null) {
+			existing.setType(update.getType());
+		}
+		
+		if(update.getName() != null) {
+			existing.setName(update.getName());
+		}
+		
+		if(update.getActive() != null) {
+			existing.setActive(update.getActive());
+		}
+		
+		if(update.getLocation() != null) {
+			existing.setLocation(update.getLocation());
+		}
+		
+		if(update.getElementAttributes() != null) {
+			existing.setElementAttributes(update.getElementAttributes());
+		}
+		
+		this.elementDao.save(this.elementEntityConverter.toEntity(existing));
+		return existing;
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<ElementBoundary> getAll(String userDomain, String userEmail) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return StreamSupport.stream(
+				this.elementDao.findAll().spliterator(), false)
+				.map(this.elementEntityConverter::fromEntity)
+				.collect(Collectors.toList());
 	}
 
 	@Override
