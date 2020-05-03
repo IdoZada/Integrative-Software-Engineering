@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import acs.ActionId;
 import acs.boundary.ActionBoundary;
@@ -15,6 +16,7 @@ import acs.converter.ActionEntityConverter;
 import acs.dal.ActionDao;
 import acs.logic.ActionService;
 
+@Service
 public class DbActionService implements ActionService{
 
 	private String projectName;
@@ -22,8 +24,7 @@ public class DbActionService implements ActionService{
 	private ActionEntityConverter actionConverter;
 	
 	@Autowired
-	public DbActionService(String projectName, ActionDao actionDao, ActionEntityConverter actionConverter) {
-		this.projectName = projectName;
+	public DbActionService(ActionDao actionDao, ActionEntityConverter actionConverter) {
 		this.actionDao = actionDao;
 		this.actionConverter = actionConverter;
 	}
