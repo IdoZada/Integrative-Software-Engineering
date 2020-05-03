@@ -1,6 +1,9 @@
 package acs.data;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -24,6 +27,7 @@ public class UserEntity {
 		this.avatar = avatar;
 	}
 
+	@Enumerated(EnumType.STRING)
 	public UserRole getRole() {
 		return role;
 	}
@@ -32,6 +36,7 @@ public class UserEntity {
 		this.role = role;
 	}
 
+	@Column(nullable = false, unique = true)
 	public String getUserName() {
 		return userName;
 	}
@@ -47,7 +52,7 @@ public class UserEntity {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-
+	@Column(nullable = false)
 	public String getAvatar() {
 		return avatar;
 	}

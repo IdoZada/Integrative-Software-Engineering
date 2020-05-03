@@ -18,7 +18,7 @@ import acs.converter.UserEntityConverter;
 import acs.data.UserEntity;
 import acs.logic.UserService;
 
-@Service
+
 public class UserServiceMockup implements UserService {
 
 	private String projectName;
