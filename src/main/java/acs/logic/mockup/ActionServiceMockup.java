@@ -12,7 +12,6 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import acs.ActionId;
 import acs.boundary.ActionBoundary;
@@ -20,7 +19,7 @@ import acs.converter.ActionEntityConverter;
 import acs.data.ActionEntity;
 import acs.logic.ActionService;
 
-@Service
+//@Service
 public class ActionServiceMockup implements ActionService {
 	
 	private String projectName;
