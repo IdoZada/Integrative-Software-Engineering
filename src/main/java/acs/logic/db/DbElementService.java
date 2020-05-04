@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
 import acs.boundary.ElementBoundary;
+import acs.boundary.ElementIdBoundary;
 import acs.converter.ElementEntityConverter;
 import acs.dal.ElementDao;
 import acs.data.ElementEntity;
 import acs.logic.ElementService;
+import acs.logic.ExtendedElementService;
 
-public class DbElementService implements ElementService{
+public class DbElementService implements ExtendedElementService{
 	private String projectName;
 	private ElementDao elementDao;
 	private ElementEntityConverter elementEntityConverter;
@@ -102,6 +104,24 @@ public class DbElementService implements ElementService{
 	@Transactional
 	public void deleteAllElements(String adminDomain, String adminEmail) {
 		this.elementDao.deleteAll();
+	}
+
+	@Override
+	public void bindExistingElementToAnExistingChildElement(ElementIdBoundary elementIdBoundary) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ElementBoundary[] getAllChildrenOfAnExistingElement() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ElementBoundary[] getAnArrayWithElementParent() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -10,17 +10,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import acs.boundary.ElementBoundary;
-import acs.logic.ElementService;
+import acs.boundary.ElementIdBoundary;
+import acs.logic.ExtendedElementService;
 
 
 @RestController
 public class ElementRelatedController {
 	
-	private ElementService elementService;
+	private ExtendedElementService extendedElementService;
 	
 	@Autowired
-	public void setElementService(ElementService elementService) {
-		this.elementService = elementService;
+	public void setElementService(ExtendedElementService extendedElementService) {
+		this.extendedElementService = extendedElementService;
 	}
 	
 	@RequestMapping(path = "/acs/elements/{managerDomain}/{managerEmail}",
@@ -31,7 +32,7 @@ public class ElementRelatedController {
 	public ElementBoundary createNewElement(@RequestBody ElementBoundary newElementBoundary,
 			@PathVariable("managerDomain") String managerDomain, @PathVariable("managerEmail") String managerEmail) {
 			
-		return this.elementService.create(managerDomain, managerEmail, newElementBoundary);
+		return this.extendedElementService.create(managerDomain, managerEmail, newElementBoundary);
 	}
 
 	@RequestMapping(path = "/acs/elements/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}",
@@ -41,7 +42,7 @@ public class ElementRelatedController {
 	public void updateElement(@RequestBody ElementBoundary elementBoundary,
 			@PathVariable("managerDomain") String managerDomain, @PathVariable("managerEmail") String managerEmail,
 			@PathVariable("elementDomain") String elementDomain, @PathVariable("elementId") String elementId) {
-			this.elementService.update(managerDomain, managerEmail,elementDomain, elementId, elementBoundary);
+			this.extendedElementService.update(managerDomain, managerEmail,elementDomain, elementId, elementBoundary);
 	}
 	
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementId}",
@@ -50,7 +51,7 @@ public class ElementRelatedController {
 	
 	public ElementBoundary getElement(@PathVariable("userDomain") String userDomain, @PathVariable("userEmail") String userEmail,
 			@PathVariable("elementDomain") String elementDomain, @PathVariable("elementId") String elementId) {
-		return this.elementService.getSpecificElement(userDomain, userEmail, elementDomain, elementId);
+		return this.extendedElementService.getSpecificElement(userDomain, userEmail, elementDomain, elementId);
 	}
 	
 	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}",
@@ -58,6 +59,28 @@ public class ElementRelatedController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	
 	public ElementBoundary[] getAllElements(@PathVariable("userDomain") String userDomain, @PathVariable("userEmail") String userEmail) {
-		return this.elementService.getAll(userDomain, userEmail).toArray(new ElementBoundary[0]);
+		return this.extendedElementService.getAll(userDomain, userEmail).toArray(new ElementBoundary[0]);
 	}
+	
+	@RequestMapping( path = "/acs/elements/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
+			method = RequestMethod.PUT,
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	public void bindExistingElementToAnExistingChildElement(@RequestBody ElementIdBoundary elementIdBoundary) {//TODO path variable
+		
+	}
+	
+	@RequestMapping( path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementId}/children",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ElementBoundary[] getAllChildrenOfAnExistingElement() {//TODO path variable
+		return null;
+	}
+ 	
+	@RequestMapping( path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementId}/parents",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ElementBoundary[] getAnArrayWithElementParent() {//TODO path variable
+		return null;
+	}
+	
 }
