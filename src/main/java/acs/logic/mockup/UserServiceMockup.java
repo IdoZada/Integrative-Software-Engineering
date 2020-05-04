@@ -18,7 +18,7 @@ import acs.converter.UserEntityConverter;
 import acs.data.UserEntity;
 import acs.logic.UserService;
 
-@Service
+
 public class UserServiceMockup implements UserService {
 
 	private String projectName;
@@ -87,7 +87,7 @@ public class UserServiceMockup implements UserService {
 	}
 
 	@Override
-	public List<UserBoundary> getAllUsers(String admainDomain, String admainEmail) {
+	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail) {
 		List<UserBoundary> allUsers = new ArrayList<>();
 		for (UserEntity userEntity : usersDatabase.values())
 			allUsers.add(userEntityConverter.fromEntity(userEntity));
@@ -95,7 +95,7 @@ public class UserServiceMockup implements UserService {
 	}
 
 	@Override
-	public void deleteAllUsers(String admainDomain, String admainEmail) {
+	public void deleteAllUsers(String adminDomain, String adminEmail) {
 		usersDatabase.clear();
 	}
 
