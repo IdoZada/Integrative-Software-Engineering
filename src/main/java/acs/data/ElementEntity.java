@@ -12,6 +12,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import acs.dal.MapToJsonConverter;
 
@@ -77,7 +79,7 @@ public class ElementEntity {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreatedTimestamp() {
 		return createdTimestamp;
 	}

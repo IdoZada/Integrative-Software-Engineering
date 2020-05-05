@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import acs.dal.MapToJsonConverter;
 
@@ -58,11 +60,11 @@ public class ActionEntity {
 	public void setElement(String element) {
 		this.element = element;
 	}
-
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getCreatedTimeStamp() {
 		return createdTimeStamp;
 	}
-
+	
 	public void setCreatedTimeStamp(Date createdTimeStamp) {
 		this.createdTimeStamp = createdTimeStamp;
 	}
