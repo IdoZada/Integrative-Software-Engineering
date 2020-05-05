@@ -71,14 +71,12 @@ public class User_tests {
 		output.setUserName("Tester");
 		
 		this.restTemplate.put(this.url + "/{domain}/{email}" , output, domain, email);
-		
 		// THEN the database is updated with the new value	
-		assertThat(this.restTemplate.getForObject(this.url + "/login/{domain}/{email}", UserBoundary.class, domain,email).getAvatar()).isEqualTo(":-)");
-		assertThat(this.restTemplate.getForObject(this.url + "/{domain}/{email}", UserBoundary.class, domain,email).getRole().toString()).isEqualTo("PLAYER");
-		assertThat(this.restTemplate.getForObject(this.url + "/{domain}/{email}", UserBoundary.class, domain,email).getUserName()).isEqualTo("Tester");
+		UserBoundary userBoundary = this.restTemplate.getForObject(this.url + "/login/{domain}/{email}", UserBoundary.class, domain,email);
+		assertThat(userBoundary).usingRecursiveComparison().isEqualTo(output);
 	}
 	
-	@Test @Ignore
+	@Test
 	public void testUserLoginAndCheckDetails() throws Exception { // TODO test not working
 		// GIVEN the server is up AND database is empty
 		//WHEN I POST /acs/users AND send a new user details
@@ -86,12 +84,10 @@ public class User_tests {
 		UserBoundary output = this.restTemplate.postForObject(this.url, input, UserBoundary.class);
 		String domain = output.getUserId().getDomain();
 		String email = output.getUserId().getEmail();
-		
-		UserBoundary[] retrievenUser = this.restTemplate.getForObject(this.url + "/login/{domain}/{email}", UserBoundary[].class, domain,email);
+		UserBoundary retrievenUser = this.restTemplate.getForObject(this.url + "/login/{domain}/{email}", UserBoundary.class, domain,email);
 
-		assertThat(retrievenUser).hasSize(1);
-		assertThat(retrievenUser[0])
+		assertThat(retrievenUser)
 				.extracting("role","userName", "avatar")
-				.containsExactly(output.getRole().toString(), output.getUserName(), output.getAvatar());
+				.containsExactlyInAnyOrder(output.getRole(), output.getUserName(), output.getAvatar());
 	}
 }
