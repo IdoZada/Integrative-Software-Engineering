@@ -108,7 +108,7 @@ public class DbElementService implements ExtendedElementService{
 
 	@Override
 	@Transactional
-	public void bindExistingElementToAnExistingChildElement(String originElementId, ElementIdBoundary elementIdBoundary) {
+	public void bindExistingElementToAnExistingChildElement(String managerDomain,String managerEmail,String originElementDomain, String originElementId, ElementIdBoundary elementIdBoundary) {
 		if (elementIdBoundary.getId() == null) {
 			throw new IdNotFoundException("No Such ID In Database");
 		}
@@ -126,7 +126,7 @@ public class DbElementService implements ExtendedElementService{
 
 	@Override
 	@Transactional(readOnly = true)
-	public ElementBoundary[] getAllChildrenOfAnExistingElement(String originElementId) {
+	public ElementBoundary[] getAllChildrenOfAnExistingElement(String userDomain,String userEmail,String originElementDomain,String originElementId) {
 		
 		ElementEntity origin = this.elementDao.findById(originElementId)
 				.orElseThrow(() -> new IdNotFoundException("No Element For Id: " + originElementId));
@@ -141,7 +141,7 @@ public class DbElementService implements ExtendedElementService{
 	}
 
 	@Override
-	public ElementBoundary[] getAnArrayWithElementParent() {
+	public ElementBoundary[] getAnArrayWithElementParent(String userDomain,String userEmail,String originElementDomain,String originElementId) {
 		// TODO If we make a "many to many" relationship
 		return null;
 	}
