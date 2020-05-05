@@ -16,8 +16,8 @@ import acs.boundary.ElementIdBoundary;
 import acs.converter.ElementEntityConverter;
 import acs.dal.ElementDao;
 import acs.data.ElementEntity;
-import acs.logic.ElementService;
 import acs.logic.ExtendedElementService;
+import acs.logic.IdNotFoundException;
 
 public class DbElementService implements ExtendedElementService{
 	private String projectName;
@@ -107,20 +107,42 @@ public class DbElementService implements ExtendedElementService{
 	}
 
 	@Override
-	public void bindExistingElementToAnExistingChildElement(ElementIdBoundary elementIdBoundary) {
-		// TODO Auto-generated method stub
+	@Transactional
+	public void bindExistingElementToAnExistingChildElement(String originElementId, ElementIdBoundary elementIdBoundary) {
+		if (elementIdBoundary.getId() == null) {
+			throw new IdNotFoundException("No Such ID In Database");
+		}
+		
+		ElementEntity origin = this.elementDao.findById(originElementId)
+								.orElseThrow(() -> new IdNotFoundException("No Element For Id: " + originElementId));
+		
+		ElementEntity child = this.elementDao.findById(elementIdBoundary.getId())
+							.orElseThrow(() -> new IdNotFoundException("No Element For Id: " + elementIdBoundary.getId()));
+		
+		origin.addChildElement(child);
+		this.elementDao.save(origin);
 		
 	}
 
 	@Override
-	public ElementBoundary[] getAllChildrenOfAnExistingElement() {
-		// TODO Auto-generated method stub
-		return null;
+	@Transactional(readOnly = true)
+	public ElementBoundary[] getAllChildrenOfAnExistingElement(String originElementId) {
+		
+		ElementEntity origin = this.elementDao.findById(originElementId)
+				.orElseThrow(() -> new IdNotFoundException("No Element For Id: " + originElementId));
+		
+		return origin
+					.getChildElements()
+					.stream()
+					.map(this.elementEntityConverter :: fromEntity)
+					.collect(Collectors.toList())
+					.toArray(new ElementBoundary[0]);
+
 	}
 
 	@Override
 	public ElementBoundary[] getAnArrayWithElementParent() {
-		// TODO Auto-generated method stub
+		// TODO If we make a "many to many" relationship
 		return null;
 	}
 
