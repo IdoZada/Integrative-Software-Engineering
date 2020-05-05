@@ -20,7 +20,7 @@ public class ElementRelatedController {
 	private ExtendedElementService extendedElementService;
 	
 	@Autowired
-	public void setElementService(ExtendedElementService extendedElementService) {
+	public void setExtendedElementService(ExtendedElementService extendedElementService) {
 		this.extendedElementService = extendedElementService;
 	}
 	

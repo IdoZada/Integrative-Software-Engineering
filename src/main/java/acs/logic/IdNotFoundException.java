@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
 public class IdNotFoundException extends RuntimeException {
 	
-	private static final long serialVersionUID = 8329536176354355038L;
+	private static final long serialVersionUID = 1632234012428544886L;
 
 	public IdNotFoundException() {
 		super();

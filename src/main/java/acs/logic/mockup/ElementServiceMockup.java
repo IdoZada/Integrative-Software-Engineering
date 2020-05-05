@@ -22,7 +22,7 @@ import acs.converter.ElementEntityConverter;
 import acs.data.ElementEntity;
 import acs.logic.ElementService;
 
-@Service
+
 public class ElementServiceMockup implements ElementService {
 	private String projectName;
 	private Map<String, ElementEntity> elementDatabase;

@@ -1,6 +1,5 @@
 package acs.restController;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,18 +11,18 @@ import org.springframework.web.bind.annotation.RestController;
 import acs.boundary.ActionBoundary;
 import acs.boundary.UserBoundary;
 import acs.logic.ActionService;
-import acs.logic.ElementService;
+import acs.logic.ExtendedElementService;
 import acs.logic.UserService;
 
 @RestController
 public class AdminController {
-	private ElementService elementService;
+	private ExtendedElementService extendedElementService;
 	private ActionService actionService;
 	private UserService userService;
 	
 	@Autowired
-	public void setElementService(ElementService elementService) {
-		this.elementService = elementService;
+	public void setExtendedElementService(ExtendedElementService elementService) {
+		this.extendedElementService = elementService;
 	}
 	
 	@Autowired
@@ -45,7 +44,7 @@ public class AdminController {
 	@RequestMapping(path = "/acs/admin/elements/{domain}/{email}",
 			method = RequestMethod.DELETE)
 	public void deleteAllElements(@PathVariable("domain") String domain, @PathVariable("email") String email) {
-		this.elementService.deleteAllElements(domain, email);
+		this.extendedElementService.deleteAllElements(domain, email);
 	}
 	
 	@RequestMapping(path = "/acs/admin/actions/{domain}/{email}",

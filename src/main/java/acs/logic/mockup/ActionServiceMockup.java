@@ -19,7 +19,7 @@ import acs.converter.ActionEntityConverter;
 import acs.data.ActionEntity;
 import acs.logic.ActionService;
 
-//@Service
+
 public class ActionServiceMockup implements ActionService {
 	
 	private String projectName;

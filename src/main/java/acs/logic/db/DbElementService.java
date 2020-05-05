@@ -9,6 +9,7 @@ import java.util.stream.StreamSupport;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import acs.boundary.ElementBoundary;
@@ -19,6 +20,7 @@ import acs.data.ElementEntity;
 import acs.logic.ExtendedElementService;
 import acs.logic.IdNotFoundException;
 
+@Service
 public class DbElementService implements ExtendedElementService{
 	private String projectName;
 	private ElementDao elementDao;
