@@ -65,22 +65,38 @@ public class ElementRelatedController {
 	@RequestMapping( path = "/acs/elements/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
 			method = RequestMethod.PUT,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void bindExistingElementToAnExistingChildElement(@RequestBody ElementIdBoundary elementIdBoundary) {//TODO path variable
-		
+	public void bindExistingElementToAnExistingChildElement(@RequestBody ElementIdBoundary elementIdBoundary,
+			@PathVariable("managerDomain") String managerDomain, @PathVariable("managerEmail") String managerEmail,
+			@PathVariable("elementDomain") String elementDomain, @PathVariable("elementId") String elementId) {//TODO path variable
+		this.extendedElementService.bindExistingElementToAnExistingChildElement(elementId, elementId, elementId, elementId, elementIdBoundary);
 	}
 	
 	@RequestMapping( path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementId}/children",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ElementBoundary[] getAllChildrenOfAnExistingElement() {//TODO path variable
-		return null;
+	public ElementBoundary[] getAllChildrenOfAnExistingElement(
+			@PathVariable("userDomain") String userDomain, @PathVariable("userEmail") String userEmail,
+			@PathVariable("elementDomain") String elementDomain, @PathVariable("elementId") String elementId) {//TODO need to fix the service!
+		ElementBoundary[] children = this.extendedElementService.getAllChildrenOfAnExistingElement(elementId, elementId, elementId, elementId);
+		if(children != null) {
+			return children;
+		}else {
+			return new ElementBoundary[0];
+		}
 	}
  	
 	@RequestMapping( path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementId}/parents",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ElementBoundary[] getAnArrayWithElementParent() {//TODO path variable
-		return null;
+	public ElementBoundary[] getAnArrayWithElementParent(
+			@PathVariable("userDomain") String userDomain, @PathVariable("userEmail") String userEmail,
+			@PathVariable("elementDomain") String elementDomain, @PathVariable("elementId") String elementId) {
+		ElementBoundary[] parents = this.getAnArrayWithElementParent(userDomain, userEmail, elementDomain, elementId);
+		if(parents != null) {
+			return parents;
+		}else {
+			return new ElementBoundary[0];
+		}
 	}
 	
 }
