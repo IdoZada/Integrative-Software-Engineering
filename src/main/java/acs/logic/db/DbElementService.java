@@ -48,7 +48,7 @@ public class DbElementService implements ExtendedElementService{
 	public ElementBoundary create(String managerDomain, String managerEmail, ElementBoundary element) {
 		String key = UUID.randomUUID().toString();
 		ElementEntity entity = this.elementEntityConverter.toEntity(element);
-		entity.setElementId(key);
+		entity.setElementId(element.getElementId().getDomain() + "@@" + key);
 		entity.setCreatedTimestamp(new Date());
 		entity.setCreatedBy(managerDomain + "@@" + managerEmail);
 		return this.elementEntityConverter.fromEntity(this.elementDao.save(entity));

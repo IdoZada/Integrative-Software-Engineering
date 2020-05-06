@@ -74,8 +74,4 @@ public class ActionTests {
 		assertThat(actions).isEmpty();
 	}
 	
-	@Test
-	public void testContext() {
-		
-	}
 }
