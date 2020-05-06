@@ -98,7 +98,6 @@ public class DbUserService implements UserService{
 	@Override
 	@Transactional
 	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail) {
-		//TODO What to do with the parameters I receive for domain and email
 		return StreamSupport
 				.stream(
 //						// INVOKE SELECT DATABASE 
@@ -115,9 +114,7 @@ public class DbUserService implements UserService{
 	@Override
 	@Transactional
 	public void deleteAllUsers(String adminDomain, String adminEmail) {
-		//TODO What to do with the parameters I receive for domain and email
 		this.userDao.deleteAll();
-		
 	}
 
 }
