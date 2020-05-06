@@ -47,6 +47,12 @@ public class DbElementService implements ExtendedElementService{
 	@Transactional
 	public ElementBoundary create(String managerDomain, String managerEmail, ElementBoundary element) {
 		String key = UUID.randomUUID().toString();
+		if(element.getName() == null) {
+			throw new RuntimeException("Element Name Can Not Be Null");
+		}
+		if(element.getType() == null) {
+			throw new RuntimeException("Element Type Can Not Be Null");
+		}
 		ElementEntity entity = this.elementEntityConverter.toEntity(element);
 		entity.setElementId(element.getElementId().getDomain() + "@@" + key);
 		entity.setCreatedTimestamp(new Date());

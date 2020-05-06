@@ -51,7 +51,7 @@ public class User_tests {
 	public void testPostNewUserReturnUserWithId() throws Exception {
 		// GIVEN the server is up AND database is empty
 		// WHEN I POST /acs/users AND send a user boundary without Id
-		NewUserDetails input = new NewUserDetails(UserRole.PLAYER, "", "tester@gmail.com", "");
+		NewUserDetails input = new NewUserDetails(UserRole.PLAYER, "", "tester@gmail.com", ":-)");
 		UserBoundary output = this.restTemplate.postForObject(this.url, input, UserBoundary.class);
 
 		// THEN the server returns status 2xx
@@ -65,7 +65,7 @@ public class User_tests {
 	public void testUpdateUserDetailsAndValidation() {
 		// GIVEN the server is up AND database is empty
 		// WHEN I POST /acs/users AND send a new user details
-		NewUserDetails input = new NewUserDetails(UserRole.PLAYER, "", "tester@gmail.com", "");
+		NewUserDetails input = new NewUserDetails(UserRole.PLAYER, "", "tester@gmail.com", ";--)");
 		UserBoundary output = this.restTemplate.postForObject(this.url, input, UserBoundary.class);
 		String domain = output.getUserId().getDomain();
 		String email = output.getUserId().getEmail();
@@ -105,7 +105,7 @@ public class User_tests {
 		String url = "http://localhost:" + this.port + "/acs/admin/users/{adminDomain}/{adminEmail}";
 				List<UserBoundary> databaseContent = 
 				  IntStream.range(1, 6) // Stream<Integer> 1,2,3,4,5
-					.mapToObj(i->"User#" + i) // Stream<String>
+					.mapToObj(i->"User" + i) // Stream<String>
 					.map(newUser-> new NewUserDetails(UserRole.PLAYER,newUser,newUser + "@gmail.com",":-P"))//Stream<NewUserDetails>
 					.map(newUser-> this.restTemplate
 							.postForObject(this.url, newUser, UserBoundary.class,this.projectName,this.adminEmail))//Stream<UserBoundary>

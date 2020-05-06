@@ -1,14 +1,16 @@
 package acs.logic.db;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import javax.transaction.Transactional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import acs.ActionId;
 import acs.boundary.ActionBoundary;
@@ -41,13 +43,17 @@ public class DbActionService implements ActionService{
 			throw new RuntimeException("Action must be invoked by someone");
 		if(action.getType() == null || action.getType().isEmpty())
 			throw new RuntimeException("Action must have valid type");
+		if(action.getElement().getElementId() == null){
+			throw new RuntimeException("Action must have valid ElementId");
+		}
 		String key = UUID.randomUUID().toString();
 		action.setActionId(new ActionId(this.projectName, key));
+		action.setCreatedTimeStamp(new Date());
 		return this.actionConverter.fromEntity(this.actionDao.save(this.actionConverter.toEntity(action)));
 	}
 
 	@Override
-	@Transactional //(readOnly = true)
+	@Transactional(readOnly = true)
 	public List<ActionBoundary> getAllActions(String adminDomain, String adminEmail) {
 		return StreamSupport.stream(this.actionDao.findAll().spliterator(), false)
 				.map(this.actionConverter::fromEntity).collect(Collectors.toList());

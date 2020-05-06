@@ -87,7 +87,7 @@ public class Element_tests {
 		// GIVEN server is up
 
 		// WHEN I POST /acs/elements/{managerDomain}/{managerEmail} with new element
-		ElementBoundary input = new ElementBoundary(new ElementId(projectName, null), null, null, "tomer", null,
+		ElementBoundary input = new ElementBoundary(new ElementId(projectName, null), "", null, "tomer", null,
 				new CreatedBy(new UserId("2020t", "tomer@gmail.com")), null, new HashMap<>());
 
 		String managerDomain = input.getCreatedBy().getUserId().getDomain();

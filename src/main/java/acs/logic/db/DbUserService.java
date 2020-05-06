@@ -6,17 +6,19 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import acs.UserId;
+import acs.ValidEmail;
 import acs.boundary.UserBoundary;
 import acs.converter.UserEntityConverter;
 import acs.dal.UserDao;
 import acs.data.UserEntity;
+import acs.data.UserRole;
 import acs.logic.UserService;
 
 @Service
@@ -48,8 +50,16 @@ public class DbUserService implements UserService{
 	public UserBoundary createUser(UserBoundary user) {
 		if(user.getUserId() == null)
 			throw new RuntimeException("user id must not be null");
-		if(user.getUserId().getEmail() == null || user.getUserId().getEmail().trim().isEmpty())
+		if(user.getUserId().getEmail() == null || user.getUserId().getEmail().trim().isEmpty()) 
 			throw new RuntimeException("user Email must not be null or empty");
+		if(!ValidEmail.isValid(user.getUserId().getEmail()))
+			throw new RuntimeException("user Email Not Valid");
+		if(!user.getRole().equals(UserRole.PLAYER) && !user.getRole().equals(UserRole.MANAGER) && !user.getRole().equals(UserRole.ADMIN))
+			throw new RuntimeException("User Role Is Not Valid");
+		if(user.getUserName() == null)
+			throw new RuntimeException("User Name Can Not Be Null");
+		if(user.getAvatar() == null || user.getAvatar().trim().isEmpty())
+			throw new RuntimeException("User Avatar Can Not Be Null Or Empty");
 		
 		user.setUserId(new UserId(this.projectName, user.getUserId().getEmail()));
 		UserEntity userEntity = this.userEntityConverter.toEntity(user);
@@ -57,7 +67,7 @@ public class DbUserService implements UserService{
 	}
 
 	@Override
-	@Transactional //(readOnly = true)
+	@Transactional(readOnly = true)
 	public UserBoundary login(String userDomain, String userEmail) {
 		Optional<UserEntity> optionalUserEntity = this.userDao.findById(userDomain + "@@" + userEmail);
 		if(!optionalUserEntity.isPresent())
@@ -75,7 +85,7 @@ public class DbUserService implements UserService{
 		if(!optionalUserEntity.isPresent())
 			throw new RuntimeException("no user exist for this user Email: " + userEmail+" and user domain: " + userDomain);
 		UserBoundary existing = userEntityConverter.fromEntity(optionalUserEntity.get());
-		if (update.getAvatar() != null) {
+		if (update.getAvatar() != null && !update.getAvatar().trim().isEmpty()) {
 			dirtyFlag = true;
 			existing.setAvatar(update.getAvatar());
 		}
@@ -86,8 +96,10 @@ public class DbUserService implements UserService{
 		}
 		
 		if (update.getRole() != null) {
-			dirtyFlag = true;
-			existing.setRole(update.getRole());
+			if(update.getRole().equals(UserRole.PLAYER) || update.getRole().equals(UserRole.MANAGER) || update.getRole().equals(UserRole.ADMIN)) {
+				dirtyFlag = true;
+				existing.setRole(update.getRole());
+			}
 		}
 
 		if (dirtyFlag)
@@ -96,8 +108,8 @@ public class DbUserService implements UserService{
 	}
 
 	@Override
-	@Transactional
-	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail) {
+	@Transactional(readOnly = true)
+	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail) { //TODO Validate permissions
 		return StreamSupport
 				.stream(
 //						// INVOKE SELECT DATABASE 
@@ -113,7 +125,7 @@ public class DbUserService implements UserService{
 
 	@Override
 	@Transactional
-	public void deleteAllUsers(String adminDomain, String adminEmail) {
+	public void deleteAllUsers(String adminDomain, String adminEmail) {//TODO Validate permissions
 		this.userDao.deleteAll();
 	}
 
