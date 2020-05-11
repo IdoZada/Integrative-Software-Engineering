@@ -1,6 +1,6 @@
 package acs.boundary;
 
-import acs.UserId;
+import acs.boundary.boundaryUtils.UserId;
 import acs.data.UserRole;
 
 public class UserBoundary {

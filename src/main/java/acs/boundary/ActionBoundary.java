@@ -3,9 +3,9 @@ package acs.boundary;
 import java.util.Date;
 import java.util.Map;
 
-import acs.ActionId;
-import acs.Element;
-import acs.InvokedBy;
+import acs.boundary.boundaryUtils.ActionId;
+import acs.boundary.boundaryUtils.Element;
+import acs.boundary.boundaryUtils.InvokedBy;
 
 public class ActionBoundary {
 	

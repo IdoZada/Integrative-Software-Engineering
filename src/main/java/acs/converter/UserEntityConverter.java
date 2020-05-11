@@ -2,8 +2,8 @@ package acs.converter;
 
 import org.springframework.stereotype.Component;
 
-import acs.UserId;
 import acs.boundary.UserBoundary;
+import acs.boundary.boundaryUtils.UserId;
 import acs.data.UserEntity;
 
 @Component

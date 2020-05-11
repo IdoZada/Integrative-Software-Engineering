@@ -13,8 +13,8 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import acs.ActionId;
 import acs.boundary.ActionBoundary;
+import acs.boundary.boundaryUtils.ActionId;
 import acs.converter.ActionEntityConverter;
 import acs.data.ActionEntity;
 import acs.logic.ActionService;

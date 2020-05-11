@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.client.RestTemplate;
 import acs.boundary.UserBoundary;
+import acs.boundary.boundaryUtils.NewUserDetails;
 import acs.data.UserRole;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)

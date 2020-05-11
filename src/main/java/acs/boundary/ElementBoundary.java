@@ -3,9 +3,9 @@ package acs.boundary;
 import java.util.Date;
 import java.util.Map;
 
-import acs.CreatedBy;
-import acs.ElementId;
-import acs.Location;
+import acs.boundary.boundaryUtils.CreatedBy;
+import acs.boundary.boundaryUtils.ElementId;
+import acs.boundary.boundaryUtils.Location;
 
 public class ElementBoundary {
 	private ElementId elementId;

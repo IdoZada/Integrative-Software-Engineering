@@ -11,8 +11,8 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import acs.UserId;
 import acs.boundary.UserBoundary;
+import acs.boundary.boundaryUtils.UserId;
 import acs.converter.UserEntityConverter;
 import acs.data.UserEntity;
 import acs.logic.UserService;

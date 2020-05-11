@@ -14,10 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import acs.CreatedBy;
-import acs.ElementId;
-import acs.UserId;
 import acs.boundary.ElementBoundary;
+import acs.boundary.boundaryUtils.CreatedBy;
+import acs.boundary.boundaryUtils.ElementId;
+import acs.boundary.boundaryUtils.UserId;
 import acs.converter.ElementEntityConverter;
 import acs.data.ElementEntity;
 import acs.logic.ElementService;

@@ -9,6 +9,10 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.client.RestTemplate;
 
 import acs.boundary.ElementBoundary;
+import acs.boundary.boundaryUtils.CreatedBy;
+import acs.boundary.boundaryUtils.ElementId;
+import acs.boundary.boundaryUtils.Location;
+import acs.boundary.boundaryUtils.UserId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

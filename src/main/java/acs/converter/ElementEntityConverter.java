@@ -1,11 +1,12 @@
 package acs.converter;
 
 import org.springframework.stereotype.Component;
-import acs.CreatedBy;
-import acs.ElementId;
-import acs.Location;
-import acs.UserId;
+
 import acs.boundary.ElementBoundary;
+import acs.boundary.boundaryUtils.CreatedBy;
+import acs.boundary.boundaryUtils.ElementId;
+import acs.boundary.boundaryUtils.Location;
+import acs.boundary.boundaryUtils.UserId;
 import acs.data.ElementEntity;
 
 @Component

@@ -1,4 +1,4 @@
-package acs;
+package acs.boundary.boundaryUtils;
 
 public class CreatedBy {
 	private UserId userId;

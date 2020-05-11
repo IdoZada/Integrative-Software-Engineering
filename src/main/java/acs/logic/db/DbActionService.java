@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import acs.ActionId;
 import acs.boundary.ActionBoundary;
+import acs.boundary.boundaryUtils.ActionId;
 import acs.converter.ActionEntityConverter;
 import acs.dal.ActionDao;
 import acs.logic.ActionService;

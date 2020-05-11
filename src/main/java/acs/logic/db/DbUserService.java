@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import acs.UserId;
-import acs.ValidEmail;
 import acs.boundary.UserBoundary;
+import acs.boundary.boundaryUtils.UserId;
+import acs.boundary.boundaryUtils.ValidEmail;
 import acs.converter.UserEntityConverter;
 import acs.dal.UserDao;
 import acs.data.UserEntity;
