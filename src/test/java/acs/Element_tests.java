@@ -71,17 +71,18 @@ public class Element_tests {
 	}
 
 	@Test
-	public void testCreateInvaildElementAndValidateThatExceptionIsThrow() {
+	public void testUpdateInvaildElementAndValidateThatExceptionIsThrow() {
 
 		// GIVEN the server is up AND database is empty
-		// WHEN I POST /acs/elements/{managerDomain}/{managerEmail} AND send a element
+		// WHEN I PUT /acs/elements/{managerDomain}/{managerEmail} AND send a element
 		// boundary with null elementId
 		ElementBoundary input = new ElementBoundary(null, "test", true, "Element", null, null, new Location(3.3, 4.5),
 				new HashMap<>());
 
-		// THEN the server returns status 5xx
+		
+		// THEN the server returns status 4xx
 		// AND throw exception
-		assertThrows(Exception.class, () -> this.restTemplate.postForObject(this.url, input, ElementBoundary.class,
+		assertThrows(Exception.class, () -> this.restTemplate.put(this.url, input, ElementBoundary.class,
 				this.projectName, this.email));
 
 	}

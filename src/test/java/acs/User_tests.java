@@ -96,7 +96,7 @@ public class User_tests {
 		UserBoundary retrievenUser = this.restTemplate.getForObject(this.url + "/login/{domain}/{email}",
 				UserBoundary.class, domain, email);
 
-		assertThat(retrievenUser).extracting("role", "userName", "avatar").containsExactlyInAnyOrder(output.getRole(),
+		assertThat(retrievenUser).extracting("role", "username", "avatar").containsExactlyInAnyOrder(output.getRole(),
 				output.getUsername(), output.getAvatar());
 	}
 
