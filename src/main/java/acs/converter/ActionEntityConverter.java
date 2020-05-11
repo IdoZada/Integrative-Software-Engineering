@@ -64,7 +64,7 @@ public class ActionEntityConverter {
 		else
 			actionEntity.setElement("@@");
 		
-		actionEntity.setCreatedTimeStamp(actionBoundary.getCreatedTimeStamp());
+		actionEntity.setCreatedTimeStamp(actionBoundary.getCreatedTimestamp());
 		if(actionBoundary.getInvokedBy() != null) {
 			actionEntity.setInvokedBy(actionBoundary.getInvokedBy().getUserId().getDomain() + "@@" + actionBoundary.getInvokedBy().getUserId().getEmail());
 		}

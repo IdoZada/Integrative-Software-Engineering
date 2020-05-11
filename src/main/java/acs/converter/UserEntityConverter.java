@@ -37,7 +37,7 @@ public class UserEntityConverter {
 		else
 			userEntity.setUserId("@@");
 		
-		userEntity.setUserName(userBoundary.getUserName());
+		userEntity.setUserName(userBoundary.getUsername());
 		userEntity.setAvatar(userBoundary.getAvatar());
 		userEntity.setRole(userBoundary.getRole());
 		

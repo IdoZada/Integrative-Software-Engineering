@@ -56,7 +56,7 @@ public class DbUserService implements UserService{
 			throw new RuntimeException("user Email Not Valid");
 		if(!user.getRole().equals(UserRole.PLAYER) && !user.getRole().equals(UserRole.MANAGER) && !user.getRole().equals(UserRole.ADMIN))
 			throw new RuntimeException("User Role Is Not Valid");
-		if(user.getUserName() == null)
+		if(user.getUsername() == null)
 			throw new RuntimeException("User Name Can Not Be Null");
 		if(user.getAvatar() == null || user.getAvatar().trim().isEmpty())
 			throw new RuntimeException("User Avatar Can Not Be Null Or Empty");
@@ -90,9 +90,9 @@ public class DbUserService implements UserService{
 			existing.setAvatar(update.getAvatar());
 		}
 
-		if (update.getUserName() != null) {
+		if (update.getUsername() != null) {
 			dirtyFlag = true;
-			existing.setUserName(update.getUserName());
+			existing.setUsername(update.getUsername());
 		}
 		
 		if (update.getRole() != null) {

@@ -5,7 +5,7 @@ import acs.data.UserRole;
 public class NewUserDetails {
 	
 	private UserRole role;
-	private String userName;
+	private String username;
 	private String email;
 	private String avatar;
 	
@@ -13,9 +13,9 @@ public class NewUserDetails {
 		
 	}
 	
-	public NewUserDetails(UserRole role, String userName, String email, String avatar) {
+	public NewUserDetails(UserRole role, String username, String email, String avatar) {
 		this.role = role;
-		this.userName = userName;
+		this.username = username;
 		this.email = email;
 		this.avatar = avatar;
 	}
@@ -28,12 +28,12 @@ public class NewUserDetails {
 		this.role = role;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getEmail() {

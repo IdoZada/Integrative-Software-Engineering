@@ -76,7 +76,7 @@ public class User_tests {
 		// AND update user name to "Tester"
 		output.setAvatar(":-)");
 		output.setRole(UserRole.PLAYER);
-		output.setUserName("Tester");
+		output.setUsername("Tester");
 
 		this.restTemplate.put(this.url + "/{domain}/{email}", output, domain, email);
 		// THEN the database is updated with the new value
@@ -97,7 +97,7 @@ public class User_tests {
 				UserBoundary.class, domain, email);
 
 		assertThat(retrievenUser).extracting("role", "userName", "avatar").containsExactlyInAnyOrder(output.getRole(),
-				output.getUserName(), output.getAvatar());
+				output.getUsername(), output.getAvatar());
 	}
 
 	@Test

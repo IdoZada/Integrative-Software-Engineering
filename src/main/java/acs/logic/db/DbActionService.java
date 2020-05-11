@@ -48,7 +48,7 @@ public class DbActionService implements ActionService{
 		}
 		String key = UUID.randomUUID().toString();
 		action.setActionId(new ActionId(this.projectName, key));
-		action.setCreatedTimeStamp(new Date());
+		action.setCreatedTimestamp(new Date());
 		return this.actionConverter.fromEntity(this.actionDao.save(this.actionConverter.toEntity(action)));
 	}
 

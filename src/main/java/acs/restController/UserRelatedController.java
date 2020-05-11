@@ -30,7 +30,7 @@ public class UserRelatedController {
 	
 	public UserBoundary newUser (@RequestBody NewUserDetails newUserDetails) {//TODO check about what argument the method receive
 		UserBoundary userBoudary = new UserBoundary(
-													newUserDetails.getRole(),newUserDetails.getUserName(),
+													newUserDetails.getRole(),newUserDetails.getUsername(),
 													new UserId(null,
 													newUserDetails.getEmail()),
 													newUserDetails.getAvatar());

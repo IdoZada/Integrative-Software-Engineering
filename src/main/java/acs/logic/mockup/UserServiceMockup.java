@@ -70,9 +70,9 @@ public class UserServiceMockup implements UserService {
 			existing.setAvatar(update.getAvatar());
 		}
 
-		if (update.getUserName() != null) {
+		if (update.getUsername() != null) {
 			dirtyFlag = true;
-			existing.setUserName(update.getUserName());
+			existing.setUsername(update.getUsername());
 		}
 		
 		if (update.getRole() != null) {

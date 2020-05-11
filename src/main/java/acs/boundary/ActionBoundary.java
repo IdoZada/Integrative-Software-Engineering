@@ -12,7 +12,7 @@ public class ActionBoundary {
 	private ActionId actionId;
 	private String type;
 	private Element element;
-	private Date createdTimeStamp;
+	private Date createdTimestamp;
 	private InvokedBy invokedBy;
 	private Map<String, Object> actionAttributes;
 
@@ -20,11 +20,11 @@ public class ActionBoundary {
 		
 	}
 
-	public ActionBoundary(ActionId actionId, String type, Element element, Date createdTimeStamp, InvokedBy invokedBy,Map<String, Object> actionAttributes) {
+	public ActionBoundary(ActionId actionId, String type, Element element, Date createdTimestamp, InvokedBy invokedBy,Map<String, Object> actionAttributes) {
 		this.actionId = actionId;
 		this.type = type;
 		this.element = element;
-		this.createdTimeStamp = createdTimeStamp;
+		this.createdTimestamp = createdTimestamp;
 		this.invokedBy = invokedBy;
 		this.actionAttributes = actionAttributes;
 	}
@@ -53,12 +53,12 @@ public class ActionBoundary {
 		this.element = element;
 	}
 
-	public Date getCreatedTimeStamp() {
-		return createdTimeStamp;
+	public Date getCreatedTimestamp() {
+		return createdTimestamp;
 	}
 
-	public void setCreatedTimeStamp(Date createdTimeStamp) {
-		this.createdTimeStamp = createdTimeStamp;
+	public void setCreatedTimestamp(Date createdTimeStamp) {
+		this.createdTimestamp = createdTimeStamp;
 	}
 
 	public InvokedBy getInvokedBy() {

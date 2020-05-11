@@ -6,17 +6,17 @@ import acs.data.UserRole;
 public class UserBoundary {
 
 	private UserRole role;
-	private String userName;
+	private String username;
 	private UserId userId;
 	private String avatar;
 	
 	public UserBoundary() {
 		
 	}
-	public UserBoundary(UserRole role, String userName, UserId userId,String avatar) {
+	public UserBoundary(UserRole role, String username, UserId userId,String avatar) {
 		
 		this.role = role;
-		this.userName = userName;
+		this.username = username;
 		this.userId = userId;
 		this.avatar = avatar;
 	}
@@ -26,11 +26,11 @@ public class UserBoundary {
 	public void setRole(UserRole role) {
 		this.role = role;
 	}
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public UserId getUserId() {
 		return userId;

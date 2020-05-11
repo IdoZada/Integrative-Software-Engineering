@@ -54,7 +54,7 @@ public class DbElementService implements ExtendedElementService{
 			throw new RuntimeException("Element Type Can Not Be Null");
 		}
 		ElementEntity entity = this.elementEntityConverter.toEntity(element);
-		entity.setElementId(element.getElementId().getDomain() + "@@" + key);
+		entity.setElementId(this.projectName + "@@" + key);
 		entity.setCreatedTimestamp(new Date());
 		entity.setCreatedBy(managerDomain + "@@" + managerEmail);
 		return this.elementEntityConverter.fromEntity(this.elementDao.save(entity));
@@ -104,7 +104,7 @@ public class DbElementService implements ExtendedElementService{
 	@Transactional(readOnly = true)
 	public ElementBoundary getSpecificElement(String userDomain, String userEmail, String elementDomain,
 			String elementId) {
-		return this.elementEntityConverter.fromEntity(this.elementDao.findById(elementId)
+		return this.elementEntityConverter.fromEntity(this.elementDao.findById(elementDomain + "@@" + elementId)
 				.orElseThrow(()->new RuntimeException("No element for id: " + elementId)));
 	}
 
@@ -121,10 +121,10 @@ public class DbElementService implements ExtendedElementService{
 			throw new IdNotFoundException("No Such ID In Database");
 		}
 		
-		ElementEntity origin = this.elementDao.findById(originElementId)
+		ElementEntity origin = this.elementDao.findById(originElementDomain + "@@" + originElementId)
 								.orElseThrow(() -> new IdNotFoundException("No Element For Id: " + originElementId));
 		
-		ElementEntity child = this.elementDao.findById(elementIdBoundary.getId())
+		ElementEntity child = this.elementDao.findById(elementIdBoundary.getDomain() + "@@" + elementIdBoundary.getId())
 							.orElseThrow(() -> new IdNotFoundException("No Element For Id: " + elementIdBoundary.getId()));
 		
 		origin.addChildElement(child);
@@ -136,7 +136,7 @@ public class DbElementService implements ExtendedElementService{
 	@Transactional(readOnly = true)
 	public ElementBoundary[] getAllChildrenOfAnExistingElement(String userDomain,String userEmail,String originElementDomain,String originElementId) {
 		
-		ElementEntity origin = this.elementDao.findById(originElementId)
+		ElementEntity origin = this.elementDao.findById(originElementDomain + "@@" + originElementId)
 				.orElseThrow(() -> new IdNotFoundException("No Element For Id: " + originElementId));
 		
 		return origin

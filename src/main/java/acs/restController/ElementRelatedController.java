@@ -68,7 +68,7 @@ public class ElementRelatedController {
 	public void bindExistingElementToAnExistingChildElement(@RequestBody ElementIdBoundary elementIdBoundary,
 			@PathVariable("managerDomain") String managerDomain, @PathVariable("managerEmail") String managerEmail,
 			@PathVariable("elementDomain") String elementDomain, @PathVariable("elementId") String elementId) {//TODO path variable
-		this.extendedElementService.bindExistingElementToAnExistingChildElement(elementId, elementId, elementId, elementId, elementIdBoundary);
+		this.extendedElementService.bindExistingElementToAnExistingChildElement(managerDomain, managerEmail, elementDomain, elementId, elementIdBoundary);
 	}
 	
 	@RequestMapping( path = "/acs/elements/{userDomain}/{userEmail}/{elementDomain}/{elementId}/children",
@@ -77,7 +77,7 @@ public class ElementRelatedController {
 	public ElementBoundary[] getAllChildrenOfAnExistingElement(
 			@PathVariable("userDomain") String userDomain, @PathVariable("userEmail") String userEmail,
 			@PathVariable("elementDomain") String elementDomain, @PathVariable("elementId") String elementId) {//TODO need to fix the service!
-		ElementBoundary[] children = this.extendedElementService.getAllChildrenOfAnExistingElement(elementId, elementId, elementId, elementId);
+		ElementBoundary[] children = this.extendedElementService.getAllChildrenOfAnExistingElement(userDomain, userEmail, elementDomain, elementId);
 		if(children != null) {
 			return children;
 		}else {
@@ -91,7 +91,7 @@ public class ElementRelatedController {
 	public ElementBoundary[] getAnArrayWithElementParent(
 			@PathVariable("userDomain") String userDomain, @PathVariable("userEmail") String userEmail,
 			@PathVariable("elementDomain") String elementDomain, @PathVariable("elementId") String elementId) {
-		ElementBoundary[] parents = this.getAnArrayWithElementParent(userDomain, userEmail, elementDomain, elementId);
+		ElementBoundary[] parents = this.extendedElementService.getAnArrayWithElementParent(userDomain, userEmail, elementDomain, elementId);
 		if(parents != null) {
 			return parents;
 		}else {
