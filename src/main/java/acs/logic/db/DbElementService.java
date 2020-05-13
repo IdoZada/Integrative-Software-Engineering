@@ -9,6 +9,8 @@ import java.util.stream.StreamSupport;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -149,8 +151,62 @@ public class DbElementService implements ExtendedElementService{
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public ElementBoundary[] getAnArrayWithElementParent(String userDomain,String userEmail,String originElementDomain,String originElementId) {
 		// TODO If we make a "many to many" relationship
+		return null;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<ElementBoundary> getAll(String userDomain, String userEmail, int size, int page) {
+		return elementDao
+				.findAll(PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
+				.getContent()
+				.stream()
+				.map(this.elementEntityConverter :: fromEntity)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public ElementBoundary[] getAllChildrenOfAnExistingElement(String userDomain, String userEmail,
+			String elementDomain, String elementId, int size, int page) {
+		
+		return elementDao
+				.findAllByChildElementsLikeAndActive(elementId, true, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
+				.stream()
+				.map(this.elementEntityConverter :: fromEntity)
+				.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public ElementBoundary[] getAnArrayWithElementParent(String userDomain, String userEmail, String elementDomain,
+			String elementId, int size, int page) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public ElementBoundary[] getAllByName(String userDomain, String userEmail, String name, int size, int page) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public ElementBoundary[] getAllByType(String userDomain, String userEmail, String type, int size, int page) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public ElementBoundary[] getAllByLocation(String userDomain, String userEmail, double lat, double lng,
+			double distance, int size, int page) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
