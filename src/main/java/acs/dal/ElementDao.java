@@ -30,11 +30,11 @@ public interface ElementDao extends PagingAndSortingRepository<ElementEntity, St
 			Pageable pageable);
 	
 	public List<ElementEntity> findAllByLocation(
-			@Param("location") String expectType,
+			@Param("location") String expectLocation,
 			Pageable pageable);
 	
 	public List<ElementEntity> findAllByLocationAndActive(
-			@Param("location") String expectType,
+			@Param("location") String expectLocation,
 			@Param("active") Boolean expectActive,
 			Pageable pageable);
 	

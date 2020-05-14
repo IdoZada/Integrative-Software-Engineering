@@ -18,7 +18,9 @@ import acs.boundary.ElementBoundary;
 import acs.boundary.ElementIdBoundary;
 import acs.converter.ElementEntityConverter;
 import acs.dal.ElementDao;
+import acs.dal.UserDao;
 import acs.data.ElementEntity;
+import acs.data.UserRole;
 import acs.logic.ExtendedElementService;
 import acs.logic.IdNotFoundException;
 
@@ -27,10 +29,12 @@ public class DbElementService implements ExtendedElementService{
 	private String projectName;
 	private ElementDao elementDao;
 	private ElementEntityConverter elementEntityConverter;
+	private UserDao userDao;
 	
-	public DbElementService(ElementDao elementDao, ElementEntityConverter elementEntityConverter) {
+	public DbElementService(ElementDao elementDao, ElementEntityConverter elementEntityConverter, UserDao userDao) {
 		this.elementDao = elementDao;
 		this.elementEntityConverter = elementEntityConverter;
+		this.userDao = userDao;
 	}
 
 	// inject value from configuration or use default value
@@ -48,48 +52,60 @@ public class DbElementService implements ExtendedElementService{
 	@Override
 	@Transactional
 	public ElementBoundary create(String managerDomain, String managerEmail, ElementBoundary element) {
-		String key = UUID.randomUUID().toString();
-		if(element.getName() == null) {
-			throw new RuntimeException("Element Name Can Not Be Null");
+		if(userDao.findById(managerDomain+"@@"+managerEmail).get().getRole().equals(UserRole.MANAGER)){
+			String key = UUID.randomUUID().toString();
+			if(element.getName() == null) {
+				throw new RuntimeException("Element Name Can Not Be Null");
+			}
+			if(element.getType() == null) {
+				throw new RuntimeException("Element Type Can Not Be Null");
+			}
+			ElementEntity entity = this.elementEntityConverter.toEntity(element);
+			entity.setElementId(this.projectName + "@@" + key);
+			entity.setCreatedTimestamp(new Date());
+			entity.setCreatedBy(managerDomain + "@@" + managerEmail);
+			return this.elementEntityConverter.fromEntity(this.elementDao.save(entity));
 		}
-		if(element.getType() == null) {
-			throw new RuntimeException("Element Type Can Not Be Null");
+		else {
+			//TODO decide which exception to throw
+			throw new RuntimeException("just manager can create an element");
 		}
-		ElementEntity entity = this.elementEntityConverter.toEntity(element);
-		entity.setElementId(this.projectName + "@@" + key);
-		entity.setCreatedTimestamp(new Date());
-		entity.setCreatedBy(managerDomain + "@@" + managerEmail);
-		return this.elementEntityConverter.fromEntity(this.elementDao.save(entity));
 	}
 
 	@Override
 	@Transactional
 	public ElementBoundary update(String managerDomain, String managerEmail, String elementDomain, String elementId,ElementBoundary update) {
 		
-		ElementBoundary existing = this.getSpecificElement(managerDomain, managerEmail, elementDomain, elementId);
-		
-		if(update.getType() != null) {
-			existing.setType(update.getType());
-		}
-		
-		if(update.getName() != null) {
-			existing.setName(update.getName());
-		}
-		
-		if(update.getActive() != null) {
-			existing.setActive(update.getActive());
-		}
-		
-		if(update.getLocation() != null) {
-			existing.setLocation(update.getLocation());
-		}
-		
-		if(update.getElementAttributes() != null) {
-			existing.setElementAttributes(update.getElementAttributes());
-		}
-		
-		this.elementDao.save(this.elementEntityConverter.toEntity(existing));
+		if(userDao.findById(managerDomain+"@@"+managerEmail).get().getRole().equals(UserRole.MANAGER)) {
+			ElementBoundary existing = this.getSpecificElement(managerDomain, managerEmail, elementDomain, elementId);
+			
+			if(update.getType() != null) {
+				existing.setType(update.getType());
+			}
+			
+			if(update.getName() != null) {
+				existing.setName(update.getName());
+			}
+			
+			if(update.getActive() != null) {
+				existing.setActive(update.getActive());
+			}
+			
+			if(update.getLocation() != null) {
+				existing.setLocation(update.getLocation());
+			}
+			
+			if(update.getElementAttributes() != null) {
+				existing.setElementAttributes(update.getElementAttributes());
+			}
+			
+			this.elementDao.save(this.elementEntityConverter.toEntity(existing));
 		return existing;
+		}
+		else {
+			//TODO decide which exception to throw
+			throw new RuntimeException("just manager can update an element");
+		}
 	}
 
 	@Override
@@ -184,22 +200,33 @@ public class DbElementService implements ExtendedElementService{
 	@Transactional(readOnly = true)
 	public ElementBoundary[] getAnArrayWithElementParent(String userDomain, String userEmail, String elementDomain,
 			String elementId, int size, int page) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return elementDao
+				.findAllByOrigin_ElementIdAndActive(elementId, true, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
+				.stream()
+				.map(this.elementEntityConverter :: fromEntity)
+				.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public ElementBoundary[] getAllByName(String userDomain, String userEmail, String name, int size, int page) {
-		// TODO Auto-generated method stub
-		return null;
+		return elementDao
+				.findAllByNameAndActive(name, true,  PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
+				.stream()
+				.map(this.elementEntityConverter :: fromEntity)
+				.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public ElementBoundary[] getAllByType(String userDomain, String userEmail, String type, int size, int page) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return elementDao
+				.findAllByTypeAndActive(type, true,  PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
+				.stream()
+				.map(this.elementEntityConverter :: fromEntity)
+				.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 	}
 
 	@Override
