@@ -1,6 +1,7 @@
 package acs.dal;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -56,6 +57,12 @@ public interface ElementDao extends PagingAndSortingRepository<ElementEntity, St
 			@Param("active") Boolean expectActive,
 			Pageable pageable);
 	
+	public List<ElementEntity> findAllByActive(
+			@Param("active") Boolean expectActive,
+			Pageable pageable);
 	
+	public Optional <ElementEntity> findByElementIdAndActive(
+			@Param("elementId") String expectElementId,
+			@Param("active") Boolean expectActive);
 
 }
