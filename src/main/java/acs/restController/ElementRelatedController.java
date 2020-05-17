@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import acs.boundary.ElementBoundary;
@@ -58,8 +59,12 @@ public class ElementRelatedController {
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	
-	public ElementBoundary[] getAllElements(@PathVariable("userDomain") String userDomain, @PathVariable("userEmail") String userEmail) {
-		return this.extendedElementService.getAll(userDomain, userEmail).toArray(new ElementBoundary[0]);
+	public ElementBoundary[] getAllElements(
+			@PathVariable("userDomain") String userDomain,
+			@PathVariable("userEmail") String userEmail,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+		return this.extendedElementService.getAll(userDomain, userEmail, size, page).toArray(new ElementBoundary[0]);
 	}
 	
 	@RequestMapping( path = "/acs/elements/{managerDomain}/{managerEmail}/{elementDomain}/{elementId}/children",
@@ -76,8 +81,10 @@ public class ElementRelatedController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary[] getAllChildrenOfAnExistingElement(
 			@PathVariable("userDomain") String userDomain, @PathVariable("userEmail") String userEmail,
-			@PathVariable("elementDomain") String elementDomain, @PathVariable("elementId") String elementId) {//TODO need to fix the service!
-		ElementBoundary[] children = this.extendedElementService.getAllChildrenOfAnExistingElement(userDomain, userEmail, elementDomain, elementId);
+			@PathVariable("elementDomain") String elementDomain, @PathVariable("elementId") String elementId,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {//TODO need to fix the service!
+		ElementBoundary[] children = this.extendedElementService.getAllChildrenOfAnExistingElement(userDomain, userEmail, elementDomain, elementId, size, page);
 		if(children != null) {
 			return children;
 		}else {
@@ -90,8 +97,10 @@ public class ElementRelatedController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ElementBoundary[] getAnArrayWithElementParent(
 			@PathVariable("userDomain") String userDomain, @PathVariable("userEmail") String userEmail,
-			@PathVariable("elementDomain") String elementDomain, @PathVariable("elementId") String elementId) {
-		ElementBoundary[] parents = this.extendedElementService.getAnArrayWithElementParent(userDomain, userEmail, elementDomain, elementId);
+			@PathVariable("elementDomain") String elementDomain, @PathVariable("elementId") String elementId,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+		ElementBoundary[] parents = this.extendedElementService.getAnArrayWithElementParent(userDomain, userEmail, elementDomain, elementId, size, page);
 		if(parents != null) {
 			return parents;
 		}else {
@@ -99,4 +108,44 @@ public class ElementRelatedController {
 		}
 	}
 	
+	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/byName/{name}",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ElementBoundary[] SearchElementByName(
+			@PathVariable("userDomain") String userDomain,
+			@PathVariable("userEmail") String userEmail,
+			@PathVariable("name") String name,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+		
+		return this.extendedElementService.getAllByName(userDomain, userEmail, name, size, page);
+	}
+	
+	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/byType/{type}",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ElementBoundary[] SearchElementByType(
+			@PathVariable("userDomain") String userDomain,
+			@PathVariable("userEmail") String userEmail,
+			@PathVariable("type") String type,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+		
+		return this.extendedElementService.getAllByType(userDomain, userEmail, type, size, page);
+	}
+	
+	@RequestMapping(path = "/acs/elements/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public ElementBoundary[] SearchElementByLocation(
+			@PathVariable("userDomain") String userDomain,
+			@PathVariable("userEmail") String userEmail,
+			@PathVariable("lat") double lat,
+			@PathVariable("lng") double lng,
+			@PathVariable("distance") double distance,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+		
+		return this.extendedElementService.getAllByLocation(userDomain, userEmail, lat, lng, distance, size, page);
+	}
 }
