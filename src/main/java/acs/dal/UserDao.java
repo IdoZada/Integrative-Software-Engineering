@@ -23,5 +23,6 @@ public interface UserDao extends PagingAndSortingRepository<UserEntity, String> 
 	public List<UserEntity> findAllByAvatar(
 			@Param("avatar") UserRole expectAvatar,
 			Pageable pageable);
+	
 
 }
