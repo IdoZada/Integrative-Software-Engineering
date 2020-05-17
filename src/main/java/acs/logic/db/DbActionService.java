@@ -16,18 +16,28 @@ import acs.boundary.ActionBoundary;
 import acs.boundary.boundaryUtils.ActionId;
 import acs.converter.ActionEntityConverter;
 import acs.dal.ActionDao;
+import acs.dal.ElementDao;
+import acs.dal.UserDao;
+import acs.data.ElementEntity;
+import acs.data.UserEntity;
+import acs.data.UserRole;
 import acs.logic.ActionService;
+import acs.logic.IdNotFoundException;
 
 @Service
 public class DbActionService implements ActionService{
 
 	private String projectName;
 	private ActionDao actionDao;
+	private ElementDao elementDao;
+	private UserDao userDao;
 	private ActionEntityConverter actionConverter;
 	
 	@Autowired
-	public DbActionService(ActionDao actionDao, ActionEntityConverter actionConverter) {
+	public DbActionService(ActionDao actionDao, ElementDao elementDao, UserDao userDao, ActionEntityConverter actionConverter) {
 		this.actionDao = actionDao;
+		this.elementDao = elementDao;
+		this.userDao = userDao;
 		this.actionConverter = actionConverter;
 	}
 	
@@ -46,6 +56,20 @@ public class DbActionService implements ActionService{
 		if(action.getElement().getElementId() == null){
 			throw new RuntimeException("Action must have valid ElementId");
 		}
+		String userId = action.getInvokedBy().getUserId().getDomain() + "@@" +
+				action.getInvokedBy().getUserId().getEmail();
+		UserEntity invoker = this.userDao.findById(userId)
+				.orElseThrow(()->new IdNotFoundException("User does not exist"));
+		if(invoker.getRole() == UserRole.MANAGER) {
+			throw new RuntimeException(invoker.getRole().toString() + "'s cant invoke actions!");
+		}
+		String elementId = action.getElement().getElementId().getDomain() + 
+				"@@" + action.getElement().getElementId().getId();
+		
+		ElementEntity element = this.elementDao.findById(elementId)
+				.orElseThrow(()-> new IdNotFoundException("Element not found"));
+		if(!element.getActive() && invoker.getRole() == UserRole.PLAYER)
+				throw new RuntimeException("Element must be active");
 		String key = UUID.randomUUID().toString();
 		action.setActionId(new ActionId(this.projectName, key));
 		action.setCreatedTimestamp(new Date());
@@ -55,12 +79,24 @@ public class DbActionService implements ActionService{
 	@Override
 	@Transactional(readOnly = true)
 	public List<ActionBoundary> getAllActions(String adminDomain, String adminEmail) {
+		String adminId = adminDomain + "@@" + adminEmail;
+		UserEntity invoker = this.userDao.findById(adminId)
+				.orElseThrow(()->new IdNotFoundException("Admin does not exist"));
+		if(invoker.getRole() == UserRole.PLAYER) {
+			throw new RuntimeException(invoker.getRole().toString() + "'s not allowed here");
+		}
 		return StreamSupport.stream(this.actionDao.findAll().spliterator(), false)
 				.map(this.actionConverter::fromEntity).collect(Collectors.toList());
 	}
 
 	@Override
 	public void deleteAllActions(String adminDomain, String adminEmail) {
+		String adminId = adminDomain + "@@" + adminEmail;
+		UserEntity invoker = this.userDao.findById(adminId)
+				.orElseThrow(()->new IdNotFoundException("Admin does not exist"));
+		if(invoker.getRole() != UserRole.ADMIN) {
+			throw new RuntimeException(invoker.getRole().toString() + "'s not allowed here");
+		}
 		actionDao.deleteAll();
 	}
 
