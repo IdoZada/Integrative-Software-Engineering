@@ -5,5 +5,5 @@ import java.util.List;
 import acs.boundary.UserBoundary;
 
 public interface ExtendedUserService extends UserService{
-	public List<UserBoundary> getAllUsers(String admainDomain, String admainEmail, int size, int page);
+	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail, int size, int page);
 }

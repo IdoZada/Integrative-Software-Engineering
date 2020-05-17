@@ -22,7 +22,7 @@ import acs.dal.UserDao;
 import acs.data.UserEntity;
 import acs.data.UserRole;
 import acs.logic.ExtendedUserService;
-import acs.logic.UserService;
+import acs.logic.UnauthorizedException;
 
 @Service
 public class DbUserService implements ExtendedUserService{
@@ -59,10 +59,12 @@ public class DbUserService implements ExtendedUserService{
 			throw new RuntimeException("user Email Not Valid");
 		if(!user.getRole().equals(UserRole.PLAYER) && !user.getRole().equals(UserRole.MANAGER) && !user.getRole().equals(UserRole.ADMIN))
 			throw new RuntimeException("User Role Is Not Valid");
-		if(user.getUsername() == null)
+		if(user.getUsername() == null || user.getUsername().isEmpty())
 			throw new RuntimeException("User Name Can Not Be Null");
 		if(user.getAvatar() == null || user.getAvatar().trim().isEmpty())
 			throw new RuntimeException("User Avatar Can Not Be Null Or Empty");
+		if(userDao.findById(user.getUserId().getDomain()+"@@"+user.getUserId().getEmail()).isPresent())
+			throw new RuntimeException("User Email Is Already Exist");
 		
 		user.setUserId(new UserId(this.projectName, user.getUserId().getEmail()));
 		UserEntity userEntity = this.userEntityConverter.toEntity(user);
@@ -112,39 +114,43 @@ public class DbUserService implements ExtendedUserService{
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail) { //TODO Validate permissions
-		return StreamSupport
-				.stream(
-//						// INVOKE SELECT DATABASE 
-						this.userDao
-							.findAll()
-							.spliterator(),
-							
-						false) //Stream<UserEntity>
-				.map(this.userEntityConverter::fromEntity) // Stream<UserBoundary>
-				.collect(Collectors.toList()); // List<UserBoundary>
+	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail) { 
+		if(userDao.findById(adminDomain+"@@"+adminDomain).get().getRole().equals(UserRole.ADMIN)) {
+			return StreamSupport
+					.stream(this.userDao
+					.findAll()
+					.spliterator(),false) 
+					.map(this.userEntityConverter::fromEntity) // Stream<UserBoundary>
+					.collect(Collectors.toList()); // List<UserBoundary>
+		}else {
+			throw new UnauthorizedException("Only Admin Can Get All Users");
+		}
 	}
 	
 
 	@Override
 	@Transactional
-	public void deleteAllUsers(String adminDomain, String adminEmail) {//TODO Validate permissions
-		this.userDao.deleteAll();
+	public void deleteAllUsers(String adminDomain, String adminEmail) {
+		if(userDao.findById(adminDomain+"@@"+adminDomain).get().getRole().equals(UserRole.ADMIN)) {
+			this.userDao.deleteAll();
+		}else {
+			throw new UnauthorizedException("Only Admin Can Delete All Users");
+		}
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<UserBoundary> getAllUsers(String admainDomain, String admainEmail, int size, int page) {
-		return StreamSupport
-				.stream(
-//						// INVOKE SELECT DATABASE 
-						this.userDao
-							.findAll(PageRequest.of(page, size, Direction.ASC, "userId"))
-							.spliterator(),
-							
-						false) //Stream<UserEntity>
-				.map(this.userEntityConverter::fromEntity) // Stream<UserBoundary>
-				.collect(Collectors.toList()); // List<UserBoundary>
+	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail, int size, int page) {
+		if(userDao.findById(adminDomain+"@@"+adminDomain).get().getRole().equals(UserRole.ADMIN)) {
+			return StreamSupport
+					.stream(this.userDao
+					.findAll(PageRequest.of(page, size, Direction.ASC, "userId"))
+					.spliterator(),false) //Stream<UserEntity>
+					.map(this.userEntityConverter::fromEntity) // Stream<UserBoundary>
+					.collect(Collectors.toList()); // List<UserBoundary>
+		}else {
+			throw new UnauthorizedException("Only Admin Can Get All Users");
+		}
 	}
 
 }

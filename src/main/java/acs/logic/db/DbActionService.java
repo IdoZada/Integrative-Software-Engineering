@@ -9,6 +9,8 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +23,12 @@ import acs.dal.UserDao;
 import acs.data.ElementEntity;
 import acs.data.UserEntity;
 import acs.data.UserRole;
-import acs.logic.ActionService;
-import acs.logic.IdNotFoundException;
+import acs.logic.ExtendedActionService;
+import acs.logic.NotFoundException;
+import acs.logic.UnauthorizedException;
 
 @Service
-public class DbActionService implements ActionService{
+public class DbActionService implements ExtendedActionService{
 
 	private String projectName;
 	private ActionDao actionDao;
@@ -59,15 +62,15 @@ public class DbActionService implements ActionService{
 		String userId = action.getInvokedBy().getUserId().getDomain() + "@@" +
 				action.getInvokedBy().getUserId().getEmail();
 		UserEntity invoker = this.userDao.findById(userId)
-				.orElseThrow(()->new IdNotFoundException("User does not exist"));
+				.orElseThrow(()->new NotFoundException("User does not exist"));
 		if(invoker.getRole() == UserRole.MANAGER) {
-			throw new RuntimeException(invoker.getRole().toString() + "'s cant invoke actions!");
+			throw new UnauthorizedException(invoker.getRole().toString() + "'s cant invoke actions!");
 		}
 		String elementId = action.getElement().getElementId().getDomain() + 
 				"@@" + action.getElement().getElementId().getId();
 		
 		ElementEntity element = this.elementDao.findById(elementId)
-				.orElseThrow(()-> new IdNotFoundException("Element not found"));
+				.orElseThrow(()-> new NotFoundException("Element not found"));
 		if(!element.getActive() && invoker.getRole() == UserRole.PLAYER)
 				throw new RuntimeException("Element must be active");
 		String key = UUID.randomUUID().toString();
@@ -81,9 +84,9 @@ public class DbActionService implements ActionService{
 	public List<ActionBoundary> getAllActions(String adminDomain, String adminEmail) {
 		String adminId = adminDomain + "@@" + adminEmail;
 		UserEntity invoker = this.userDao.findById(adminId)
-				.orElseThrow(()->new IdNotFoundException("Admin does not exist"));
+				.orElseThrow(()->new NotFoundException("Admin does not exist"));
 		if(invoker.getRole() == UserRole.PLAYER) {
-			throw new RuntimeException(invoker.getRole().toString() + "'s not allowed here");
+			throw new UnauthorizedException(invoker.getRole().toString() + "'s not allowed here");
 		}
 		return StreamSupport.stream(this.actionDao.findAll().spliterator(), false)
 				.map(this.actionConverter::fromEntity).collect(Collectors.toList());
@@ -93,11 +96,26 @@ public class DbActionService implements ActionService{
 	public void deleteAllActions(String adminDomain, String adminEmail) {
 		String adminId = adminDomain + "@@" + adminEmail;
 		UserEntity invoker = this.userDao.findById(adminId)
-				.orElseThrow(()->new IdNotFoundException("Admin does not exist"));
+				.orElseThrow(()->new NotFoundException("Admin does not exist"));
 		if(invoker.getRole() != UserRole.ADMIN) {
-			throw new RuntimeException(invoker.getRole().toString() + "'s not allowed here");
+			throw new UnauthorizedException(invoker.getRole().toString() + "'s not allowed here");
 		}
 		actionDao.deleteAll();
+	}
+
+	@Override
+	public List<ActionBoundary> getAllActions(String adminDomain, String adminEmail, int size, int page) {
+		if(userDao.findById(adminDomain+"@@"+adminEmail).get().getRole().equals(UserRole.ADMIN)) {
+			return StreamSupport
+					.stream(this.actionDao
+					.findAll(PageRequest.of(page, size, Direction.ASC,"createdTimeStamp","ActionId"))
+					.spliterator(),false)
+					.map(this.actionConverter::fromEntity)
+					.collect(Collectors.toList());
+		}else {
+			throw new UnauthorizedException("Only Admin Can Get All Actions");
+		}
+		
 	}
 
 }

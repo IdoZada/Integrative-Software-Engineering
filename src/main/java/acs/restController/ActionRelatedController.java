@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import acs.boundary.ActionBoundary;
-import acs.logic.ActionService;
+import acs.logic.ExtendedActionService;
 
 @RestController
 public class ActionRelatedController {
 	
-	private ActionService actionService;
+	private ExtendedActionService extendedActionService;
 	
 	@Autowired
-	public ActionRelatedController(ActionService actionService) {
-		this.actionService = actionService;
+	public ActionRelatedController(ExtendedActionService extendedActionService) {
+		this.extendedActionService = extendedActionService;
 	}
 	
 	@RequestMapping(path = "/acs/actions",
@@ -26,6 +26,6 @@ public class ActionRelatedController {
 					consumes = MediaType.APPLICATION_JSON_VALUE)
 	
 	public Object invokeAction(@RequestBody ActionBoundary actionBoundary) {
-		return this.actionService.invokeAction(actionBoundary);
+		return this.extendedActionService.invokeAction(actionBoundary);
 	}
 }

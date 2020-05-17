@@ -12,7 +12,6 @@ import acs.boundary.UserBoundary;
 import acs.boundary.boundaryUtils.NewUserDetails;
 import acs.boundary.boundaryUtils.UserId;
 import acs.logic.ExtendedUserService;
-import acs.logic.UserService;
 
 @RestController
 public class UserRelatedController {

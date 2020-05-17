@@ -9,10 +9,13 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.client.RestTemplate;
 
 import acs.boundary.ElementBoundary;
+import acs.boundary.UserBoundary;
 import acs.boundary.boundaryUtils.CreatedBy;
 import acs.boundary.boundaryUtils.ElementId;
 import acs.boundary.boundaryUtils.Location;
+import acs.boundary.boundaryUtils.NewUserDetails;
 import acs.boundary.boundaryUtils.UserId;
+import acs.data.UserRole;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -45,7 +48,28 @@ public class Element_tests {
 		this.url = "http://localhost:" + this.port + "/acs/elements/{managerDomain}/{managerEmail}";
 		this.email = "daniel@gmail.com";
 		this.restTemplate = new RestTemplate();
+		
+		
+		NewUserDetails adminUser = new NewUserDetails(UserRole.ADMIN, "Admin", "Admin@gmail.com", ";-)");
+		NewUserDetails managerUser = new NewUserDetails(UserRole.MANAGER, "Manager", "Manager@gmail.com", ":-)");
+		NewUserDetails simpleUser1 = new NewUserDetails(UserRole.PLAYER, "Player1", "Player1@gmail.com", ":)");
+		NewUserDetails simpleUser2 = new NewUserDetails(UserRole.PLAYER, "Player2", "Player2@gmail.com", ":>)");
+		NewUserDetails simpleUser3 = new NewUserDetails(UserRole.PLAYER, "Player3", "Player3@gmail.com", ":->)");
+		this.restTemplate.postForObject("/acs/users", adminUser, UserBoundary.class);
+		this.restTemplate.postForObject("/acs/users", managerUser, UserBoundary.class);
+		this.restTemplate.postForObject("/acs/users", simpleUser1, UserBoundary.class);
+		this.restTemplate.postForObject("/acs/users", simpleUser2, UserBoundary.class);
+		this.restTemplate.postForObject("/acs/users", simpleUser3, UserBoundary.class);
+		
+		ElementBoundary element1 = new ElementBoundary(new ElementId(this.projectName, ""), "garden", false, "rotshild", null,
+				null, new Location(3.3, 4.5), new HashMap<>());
+		ElementBoundary element2 = new ElementBoundary(new ElementId(this.projectName, ""), "garden", true, "tel aviv", null,
+				null, new Location(3.3, 4.5), new HashMap<>());
+		
+		this.restTemplate.postForObject(this.url, element1, ElementBoundary.class,this.projectName, this.email);
+		this.restTemplate.postForObject(this.url, element2, ElementBoundary.class,this.projectName, this.email);
 	}
+	
 
 	@AfterEach
 	public void teardown() {
@@ -141,6 +165,11 @@ public class Element_tests {
 				input.getType(),
 				input.getActive());
 
+	}
+	
+	@Test
+	public void testGetAllElementsByPlayerNotContainsNonActiveElements() throws Exception{
+		
 	}
 	
 	

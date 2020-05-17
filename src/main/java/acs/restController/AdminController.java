@@ -11,15 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import acs.boundary.ActionBoundary;
 import acs.boundary.UserBoundary;
-import acs.logic.ActionService;
+import acs.logic.ExtendedActionService;
 import acs.logic.ExtendedElementService;
 import acs.logic.ExtendedUserService;
-import acs.logic.UserService;
 
 @RestController
 public class AdminController {
 	private ExtendedElementService extendedElementService;
-	private ActionService actionService; // private ExtendedActionService extendedActionService;
+	private ExtendedActionService extendedActionService;
 	private ExtendedUserService extendedUserService;
 	
 	@Autowired
@@ -28,8 +27,8 @@ public class AdminController {
 	}
 	
 	@Autowired
-	public void setActionService(ActionService actionService) {
-		this.actionService = actionService;
+	public void setActionService(ExtendedActionService extendedActionService) {
+		this.extendedActionService = extendedActionService;
 	}
 	
 	@Autowired
@@ -52,7 +51,7 @@ public class AdminController {
 	@RequestMapping(path = "/acs/admin/actions/{domain}/{email}",
 			method = RequestMethod.DELETE)
 	public void deleteAllActions(@PathVariable("domain") String domain, @PathVariable("email") String email) {
-		this.actionService.deleteAllActions(domain, email);
+		this.extendedActionService.deleteAllActions(domain, email);
 	}
 	
 	@RequestMapping(path = "/acs/admin/users/{adminDomain}/{adminEmail}",
@@ -72,7 +71,6 @@ public class AdminController {
 			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
 			@RequestParam(name = "page", required = false, defaultValue = "0") int page){
 		
-		//return this.extendedActionService.getAllActions(domain, email, size, page).toArray(new ActionBoundary[0]);
-		return this.actionService.getAllActions(domain, email).toArray(new ActionBoundary[0]);
+		return this.extendedActionService.getAllActions(domain, email, size, page).toArray(new ActionBoundary[0]);
 	}
 }
