@@ -6,19 +6,21 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import acs.boundary.ActionBoundary;
 import acs.boundary.UserBoundary;
 import acs.logic.ActionService;
 import acs.logic.ExtendedElementService;
+import acs.logic.ExtendedUserService;
 import acs.logic.UserService;
 
 @RestController
 public class AdminController {
 	private ExtendedElementService extendedElementService;
-	private ActionService actionService;
-	private UserService userService;
+	private ActionService actionService; // private ExtendedActionService extendedActionService;
+	private ExtendedUserService extendedUserService;
 	
 	@Autowired
 	public void setExtendedElementService(ExtendedElementService elementService) {
@@ -31,14 +33,14 @@ public class AdminController {
 	}
 	
 	@Autowired
-	public void setUserService(UserService userService) {
-		this.userService = userService;
+	public void setExtendedUserService(ExtendedUserService userService) {
+		this.extendedUserService = userService;
 	}
 	
 	@RequestMapping(path = "/acs/admin/users/{domain}/{email}",
 			method = RequestMethod.DELETE)
 	public void deleteAllUsers(@PathVariable("domain") String domain, @PathVariable("email") String email) {
-		this.userService.deleteAllUsers(domain, email);
+		this.extendedUserService.deleteAllUsers(domain, email);
 	}
 	
 	@RequestMapping(path = "/acs/admin/elements/{domain}/{email}",
@@ -56,16 +58,21 @@ public class AdminController {
 	@RequestMapping(path = "/acs/admin/users/{adminDomain}/{adminEmail}",
 				method = RequestMethod.GET,
 				produces = MediaType.APPLICATION_JSON_VALUE)
-	public UserBoundary[] exportAllusers(@PathVariable("adminDomain") String domain, @PathVariable("adminEmail") String email){
+	public UserBoundary[] exportAllusers(@PathVariable("adminDomain") String domain, @PathVariable("adminEmail") String email,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page){
 		
-		return this.userService.getAllUsers(domain, email).toArray(new UserBoundary[0]);
+		return this.extendedUserService.getAllUsers(domain, email, size, page).toArray(new UserBoundary[0]);
 	}
 	
 	@RequestMapping(path = "/acs/admin/actions/{adminDomain}/{adminEmail}",
 			method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ActionBoundary[] exportAllActions(@PathVariable("adminDomain") String domain, @PathVariable("adminEmail") String email){
+	public ActionBoundary[] exportAllActions(@PathVariable("adminDomain") String domain, @PathVariable("adminEmail") String email,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page){
 		
+		//return this.extendedActionService.getAllActions(domain, email, size, page).toArray(new ActionBoundary[0]);
 		return this.actionService.getAllActions(domain, email).toArray(new ActionBoundary[0]);
 	}
 }

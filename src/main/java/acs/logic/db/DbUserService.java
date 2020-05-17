@@ -9,6 +9,8 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,10 +21,11 @@ import acs.converter.UserEntityConverter;
 import acs.dal.UserDao;
 import acs.data.UserEntity;
 import acs.data.UserRole;
+import acs.logic.ExtendedUserService;
 import acs.logic.UserService;
 
 @Service
-public class DbUserService implements UserService{
+public class DbUserService implements ExtendedUserService{
 	private String projectName;
 	private UserDao userDao;
 	private UserEntityConverter userEntityConverter;
@@ -127,6 +130,21 @@ public class DbUserService implements UserService{
 	@Transactional
 	public void deleteAllUsers(String adminDomain, String adminEmail) {//TODO Validate permissions
 		this.userDao.deleteAll();
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<UserBoundary> getAllUsers(String admainDomain, String admainEmail, int size, int page) {
+		return StreamSupport
+				.stream(
+//						// INVOKE SELECT DATABASE 
+						this.userDao
+							.findAll(PageRequest.of(page, size, Direction.ASC, "userId"))
+							.spliterator(),
+							
+						false) //Stream<UserEntity>
+				.map(this.userEntityConverter::fromEntity) // Stream<UserBoundary>
+				.collect(Collectors.toList()); // List<UserBoundary>
 	}
 
 }

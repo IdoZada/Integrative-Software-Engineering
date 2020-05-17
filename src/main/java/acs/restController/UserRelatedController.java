@@ -11,16 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
 import acs.boundary.UserBoundary;
 import acs.boundary.boundaryUtils.NewUserDetails;
 import acs.boundary.boundaryUtils.UserId;
+import acs.logic.ExtendedUserService;
 import acs.logic.UserService;
 
 @RestController
 public class UserRelatedController {
 	
-	private UserService userService;
+	private ExtendedUserService extendedUserService;
 	
 	@Autowired
-	public void setUserService(UserService userService) {
-		this.userService = userService;
+	public void setUserService(ExtendedUserService extendedUserService) {
+		this.extendedUserService = extendedUserService;
 	}
 
 	@RequestMapping(path = "/acs/users",
@@ -34,7 +35,7 @@ public class UserRelatedController {
 													new UserId(null,
 													newUserDetails.getEmail()),
 													newUserDetails.getAvatar());
-		return this.userService.createUser(userBoudary);
+		return this.extendedUserService.createUser(userBoudary);
 	}
 	
 	@RequestMapping(path = "/acs/users/login/{userDomain}/{userEmail}",
@@ -42,7 +43,7 @@ public class UserRelatedController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	
 	public UserBoundary retrieveUserDetails (@PathVariable("userDomain") String userDomain,@PathVariable("userEmail") String userEmail ) {
-		 return this.userService.login(userDomain, userEmail);
+		 return this.extendedUserService.login(userDomain, userEmail);
 	}
 	
 	
@@ -55,6 +56,6 @@ public class UserRelatedController {
 			, @PathVariable("userDomain") String userDomain
 			, @PathVariable("userEmail") String userEmail) {
 
-		this.userService.updateUser(userDomain, userEmail, userBoundary);
+		this.extendedUserService.updateUser(userDomain, userEmail, userBoundary);
 	}
 }
