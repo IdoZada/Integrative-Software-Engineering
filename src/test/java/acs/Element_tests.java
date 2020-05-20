@@ -1,6 +1,5 @@
 package acs;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -175,9 +174,5 @@ public class Element_tests {
 		assertThrows(Exception.class, () -> this.restTemplate.postForObject(this.url, element, ElementBoundary.class, this.projectName, "Player1@gmail.com"));
 		
 	}
-	
-	@Test
-	public void testUpdateElementByPlayerAndThrowsException() throws UnauthorizedException{
-			
-	}
+
 }
