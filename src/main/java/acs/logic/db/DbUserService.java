@@ -57,16 +57,20 @@ public class DbUserService implements ExtendedUserService{
 			throw new RuntimeException("user Email must not be null or empty");
 		if(!ValidEmail.isValid(user.getUserId().getEmail()))
 			throw new RuntimeException("user Email Not Valid");
+		if(user.getRole() == null) 
+			throw new RuntimeException("User Role cannot be null");
 		if(!user.getRole().equals(UserRole.PLAYER) && !user.getRole().equals(UserRole.MANAGER) && !user.getRole().equals(UserRole.ADMIN))
 			throw new RuntimeException("User Role Is Not Valid");
 		if(user.getUsername() == null || user.getUsername().isEmpty())
 			throw new RuntimeException("User Name Can Not Be Null");
 		if(user.getAvatar() == null || user.getAvatar().trim().isEmpty())
 			throw new RuntimeException("User Avatar Can Not Be Null Or Empty");
+		
+		user.setUserId(new UserId(this.projectName, user.getUserId().getEmail()));
+		
 		if(userDao.findById(user.getUserId().getDomain()+"@@"+user.getUserId().getEmail()).isPresent())
 			throw new RuntimeException("User Email Is Already Exist");
 		
-		user.setUserId(new UserId(this.projectName, user.getUserId().getEmail()));
 		UserEntity userEntity = this.userEntityConverter.toEntity(user);
 		return this.userEntityConverter.fromEntity(this.userDao.save(userEntity));	
 	}
@@ -131,7 +135,7 @@ public class DbUserService implements ExtendedUserService{
 	@Override
 	@Transactional
 	public void deleteAllUsers(String adminDomain, String adminEmail) {
-		if(userDao.findById(adminDomain+"@@"+adminDomain).get().getRole().equals(UserRole.ADMIN)) {
+		if(userDao.findById(adminDomain+"@@"+adminEmail).get().getRole().equals(UserRole.ADMIN)) {
 			this.userDao.deleteAll();
 		}else {
 			throw new UnauthorizedException("Only Admin Can Delete All Users");
@@ -141,7 +145,7 @@ public class DbUserService implements ExtendedUserService{
 	@Override
 	@Transactional(readOnly = true)
 	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail, int size, int page) {
-		if(userDao.findById(adminDomain+"@@"+adminDomain).get().getRole().equals(UserRole.ADMIN)) {
+		if(userDao.findById(adminDomain+"@@"+adminEmail).get().getRole().equals(UserRole.ADMIN)) {
 			return StreamSupport
 					.stream(this.userDao
 					.findAll(PageRequest.of(page, size, Direction.ASC, "userId"))
