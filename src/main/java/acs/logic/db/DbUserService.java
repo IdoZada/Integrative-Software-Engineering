@@ -65,8 +65,7 @@ public class DbUserService implements ExtendedUserService{
 			throw new RuntimeException("User Avatar Can Not Be Null Or Empty");
 		if(userDao.findById(user.getUserId().getDomain()+"@@"+user.getUserId().getEmail()).isPresent())
 			throw new RuntimeException("User Email Is Already Exist");
-		System.err.println(user.getUserId().getEmail());
-		user.setUserId(new UserId(this.projectName, user.getUserId().getEmail()));
+		
 		UserEntity userEntity = this.userEntityConverter.toEntity(user);
 		return this.userEntityConverter.fromEntity(this.userDao.save(userEntity));	
 	}
