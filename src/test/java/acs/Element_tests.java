@@ -16,7 +16,6 @@ import acs.boundary.boundaryUtils.Location;
 import acs.boundary.boundaryUtils.NewUserDetails;
 import acs.boundary.boundaryUtils.UserId;
 import acs.data.UserRole;
-import acs.logic.UnauthorizedException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -172,5 +171,7 @@ public class Element_tests {
 				new CreatedBy(new UserId(this.projectName, "Player12@gmail.com")), new Location(3.35, 4.545), new HashMap<>());
 		
 		assertThrows(Exception.class, () -> this.restTemplate.postForObject(this.url, element, ElementBoundary.class, this.projectName, "Player1@gmail.com"));
+		
 	}
+	
 }
