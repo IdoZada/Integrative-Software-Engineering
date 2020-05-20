@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Convert;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -27,7 +28,7 @@ public class ElementEntity {
 	private boolean active;
 	private Date createdTimestamp;
 	private String createdBy;
-	private String location;
+	private LocationEntity location;
 	private Map<String,Object> elementAttributes;
 	private ElementEntity origin;
 	private Set<ElementEntity> childElements;
@@ -37,7 +38,7 @@ public class ElementEntity {
 	}
 
 	public ElementEntity(String elementId, String type, String name, boolean active, Date createdTimestamp,
-			String createdBy, String location, Map<String, Object> elementAttributes) {
+			String createdBy, LocationEntity location, Map<String, Object> elementAttributes) {
 		this.elementId = elementId;
 		this.type = type;
 		this.name = name;
@@ -95,12 +96,12 @@ public class ElementEntity {
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-
-	public String getLocation() {
+	@Embedded
+	public LocationEntity getLocation() {
 		return location;
 	}
 
-	public void setLocation(String location) {
+	public void setLocation(LocationEntity location) {
 		this.location = location;
 	}
 	@Convert(converter = MapToJsonConverter.class)

@@ -1,5 +1,6 @@
 package acs;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +49,7 @@ public class Element_tests {
 		this.url = "http://localhost:" + this.port + "/acs/elements/{managerDomain}/{managerEmail}";
 		this.managerEmail = "Manager@gmail.com";
 		this.restTemplate = new RestTemplate();
+		
 	}
 	
 	@BeforeEach
@@ -65,9 +67,9 @@ public class Element_tests {
 		this.restTemplate.postForObject("http://localhost:" + this.port + "/acs/users", simpleUser3, UserBoundary.class);
 		
 		ElementBoundary element1 = new ElementBoundary(new ElementId(this.projectName, ""), "garden", false, "rotshild", null,
-				null, new Location(3.3, 4.5), new HashMap<>());
+				null, new Location(31.877812470456607, 34.81664447789716), new HashMap<>());
 		ElementBoundary element2 = new ElementBoundary(new ElementId(this.projectName, ""), "garden", true, "tel aviv", null,
-				null, new Location(3.3, 4.5), new HashMap<>());
+				null, new Location(31.880408,  34.812803), new HashMap<>());
 		
 		this.restTemplate.postForObject(this.url, element1, ElementBoundary.class,this.projectName, this.managerEmail);
 		this.restTemplate.postForObject(this.url, element2, ElementBoundary.class,this.projectName, this.managerEmail);
@@ -75,9 +77,11 @@ public class Element_tests {
 	}
 	
 	
-//	@AfterEach
+	@AfterEach
 	public void teardown() {
 		this.restTemplate.delete("http://localhost:" + this.port + "/acs/admin/elements/{adminDomain}/{adminEmail}",
+				this.projectName, "Admin@gmail.com");
+		this.restTemplate.delete("http://localhost:" + this.port + "/acs/admin/users/{adminDomain}/{adminEmail}",
 				this.projectName, "Admin@gmail.com");
 	}
 
@@ -120,7 +124,7 @@ public class Element_tests {
 		// GIVEN server is up
 
 		// WHEN I POST /acs/elements/{managerDomain}/{managerEmail} with new element
-		ElementBoundary input = new ElementBoundary(new ElementId(projectName, null), "", null, "tomer", null,
+		ElementBoundary input = new ElementBoundary(new ElementId(projectName, null), "", null, "Ido", null,
 				new CreatedBy(new UserId(this.projectName, this.managerEmail)), null, new HashMap<>());
 
 		String managerDomain = input.getCreatedBy().getUserId().getDomain();
@@ -142,21 +146,24 @@ public class Element_tests {
 		
 		// WHEN I POST /acs/elements/{managerDomain}/{managerEmail} with new element
 		ElementBoundary input = new ElementBoundary(
-					new ElementId(projectName,"tester"), "tm", true, "tomer", null, new CreatedBy(new UserId(this.projectName, this.managerEmail)), null, new HashMap<>());
+					new ElementId(projectName,"tester"), "tm", true, "Ido", null, new CreatedBy(new UserId(this.projectName, this.managerEmail)), null, new HashMap<>());
 		
 		String managerDomain = input.getCreatedBy().getUserId().getDomain();
 		String managerEmail = input.getCreatedBy().getUserId().getEmail();
-		this.restTemplate
-		.postForObject(
-				this.url, 
-				input, 
-				ElementBoundary.class,managerDomain,managerEmail);
-		
+		ElementBoundary elementBoundary = 
+				this.restTemplate
+								.postForObject(
+										this.url, 
+										input, 
+										ElementBoundary.class,managerDomain,managerEmail);
+								
 		// THEN server contains this Element in the database
 		// AND it's element attribute is similar input's
 		ElementBoundary output = 
 		  this.restTemplate
-			.getForObject(this.url + "{elementDomain}/{elementId}" , ElementBoundary.class,managerDomain, managerEmail, input.getElementId().getDomain(), input.getElementId().getId());
+			.getForObject(this.url + "/{elementDomain}/{elementId}" ,
+					ElementBoundary.class,
+					managerDomain, managerEmail, elementBoundary.getElementId().getDomain(), elementBoundary.getElementId().getId());
 		
 					
 		assertThat(output)
@@ -173,5 +180,23 @@ public class Element_tests {
 		assertThrows(Exception.class, () -> this.restTemplate.postForObject(this.url, element, ElementBoundary.class, this.projectName, "Player1@gmail.com"));
 		
 	}
+	
+//	@Test
+//	public void testGetAllElementsWithDistanceOfOneKm() {
+//		
+//		ElementBoundary[] element = this.restTemplate.getForObject(
+//				"http://localhost:" + this.port + "/acs/elements/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}?size=5&page=0"
+//				, ElementBoundary[].class
+//				, this.projectName,"Player1@gmail.com",31.879249,34.814715,100000,2,0);
+//		
+//		
+//		assertThat(element).hasSize(2);
+//		
+////		"/acs/elements/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}"
+////		31.879249, 34.814715 
+//		
+////		31.861808, 34.804417
+//		
+//	}
 	
 }

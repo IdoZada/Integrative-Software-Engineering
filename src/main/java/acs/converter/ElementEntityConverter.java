@@ -8,6 +8,7 @@ import acs.boundary.boundaryUtils.ElementId;
 import acs.boundary.boundaryUtils.Location;
 import acs.boundary.boundaryUtils.UserId;
 import acs.data.ElementEntity;
+import acs.data.LocationEntity;
 
 @Component
 public class ElementEntityConverter {
@@ -35,9 +36,9 @@ public class ElementEntityConverter {
 
 		Location location;
 		if (elementEntity.getLocation() != null) {
-			String[] locationParts = elementEntity.getLocation().split(":");
-			double lat = Double.parseDouble(locationParts[0]);
-			double lng = Double.parseDouble(locationParts[1]);
+
+			double lat = elementEntity.getLocation().getLat();
+			double lng = elementEntity.getLocation().getLng();
 			location = new Location(lat, lng);
 
 		} else {
@@ -76,8 +77,11 @@ public class ElementEntityConverter {
 		}
 
 		if (elementBoundary.getLocation() != null) {
-			elementEntity
-					.setLocation(elementBoundary.getLocation().getLat() + ":" + elementBoundary.getLocation().getLng());
+			LocationEntity locationEntity = new LocationEntity();
+			locationEntity.setLat(elementBoundary.getLocation().getLat());
+			locationEntity.setLng(elementBoundary.getLocation().getLng());
+			elementEntity.setLocation(locationEntity);
+					
 		} else {
 			elementEntity.setLocation(null);
 		}

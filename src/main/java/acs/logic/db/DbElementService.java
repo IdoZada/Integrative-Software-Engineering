@@ -296,7 +296,40 @@ public class DbElementService implements ExtendedElementService{
 	public ElementBoundary[] getAllByLocation(String userDomain, String userEmail, double lat, double lng,
 			double distance, int size, int page) {
 		
-		return null;
-	}
+		// number of km per degree = ~111km (111.32 in google maps, but range varies
+		// between 110.567km at the equator and 111.699km at the poles)
+		// 1km in degree = 1 / 111.32km = 0.0089
+		// 1m in degree = 0.0089 / 1000 = 0.0000089
+		double coef = distance * 0.0000089;
+		double maxLat = lat + coef;
+		double minLat = lat - coef;
 
+		// pi / 180 = 0.018
+		double minLng = lng + coef / Math.cos(lat * 0.018);
+		double maxLng = lng - coef / Math.cos(lat * 0.018);
+		
+		if(userDao.findById(userDomain+"@@"+userEmail).get().getRole().equals(UserRole.PLAYER)) {
+			return this.elementDao.findAllByLocation_LatBetweenAndLocation_LngBetweenAndActive(
+					minLat,
+					maxLat,
+					minLng,
+					maxLng,
+					true,
+					PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
+					.stream()
+					.map(this.elementEntityConverter :: fromEntity)
+					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
+		}
+		else {
+			return this.elementDao.findAllByLocation_LatBetweenAndLocation_LngBetween(
+					minLat,
+					maxLat,
+					minLng,
+					maxLng,
+					PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
+					.stream()
+					.map(this.elementEntityConverter :: fromEntity)
+					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
+		}
+	}
 }

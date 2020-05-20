@@ -193,32 +193,32 @@ public class User_tests {
 		assertThrows(Exception.class, () -> this.restTemplate.postForObject(this.url, input, UserBoundary.class));
 	}
 	
-//	@Test
-//	public void testGetAllUsersAfterDatabaseIsInitializedWith6UsersUsingPageination() {
-//		// GIVEN the database contains 5 users
-//		// POST /acs/users
-//		NewUserDetails input1 = new NewUserDetails(UserRole.PLAYER, "tomer", "tomer@gmail.com", ":-)>");
-//		this.restTemplate.postForObject(this.url, input1, UserBoundary.class);
-//		NewUserDetails input2 = new NewUserDetails(UserRole.PLAYER, "ido", "ido@gmail.com", ":-)-");
-//		this.restTemplate.postForObject(this.url, input2, UserBoundary.class);
-//		NewUserDetails input3 = new NewUserDetails(UserRole.PLAYER, "daniel", "daniel@gmail.com", ":-)/");
-//		this.restTemplate.postForObject(this.url, input3, UserBoundary.class);
-//		NewUserDetails input4 = new NewUserDetails(UserRole.PLAYER, "alon", "alon@gmail.com", ":-)+");
-//		this.restTemplate.postForObject(this.url, input4, UserBoundary.class);
-//
-//		String url = "http://localhost:" + this.port + "/acs/admin/users/{adminDomain}/{adminEmail}"+"?size=2&page=0";
-//		// WHEN I GET /acs/admin/users/{adminDomain}/{adminEmail}
-//		UserBoundary[] result = this.restTemplate.getForObject(url, UserBoundary[].class, this.projectName, adminEmail,2,0);
-//		
-//		List<UserBoundary> users = 
-//				Arrays.stream(result)
-//				.filter(user->user.getRole() != UserRole.ADMIN)
-//				.collect(Collectors.toList());
-//
-//		assertThat(users).hasSize(2);
-//		// THEN The server returns status 2xx
-//		
-//		
-//	}
+	@Test
+	public void testGetAllUsersAfterDatabaseIsInitializedWith6UsersUsingPageination() {
+		// GIVEN the database contains 5 users
+		// POST /acs/users
+		NewUserDetails input1 = new NewUserDetails(UserRole.PLAYER, "tomer", "tomer@gmail.com", ":-)>");
+		this.restTemplate.postForObject(this.url, input1, UserBoundary.class);
+		NewUserDetails input2 = new NewUserDetails(UserRole.PLAYER, "ido", "ido@gmail.com", ":-)-");
+		this.restTemplate.postForObject(this.url, input2, UserBoundary.class);
+		NewUserDetails input3 = new NewUserDetails(UserRole.PLAYER, "daniel", "daniel@gmail.com", ":-)/");
+		this.restTemplate.postForObject(this.url, input3, UserBoundary.class);
+		NewUserDetails input4 = new NewUserDetails(UserRole.PLAYER, "alon", "alon@gmail.com", ":-)+");
+		this.restTemplate.postForObject(this.url, input4, UserBoundary.class);
+
+		String url = "http://localhost:" + this.port + "/acs/admin/users/{adminDomain}/{adminEmail}"+"?size=3&page=0";
+		// WHEN I GET /acs/admin/users/{adminDomain}/{adminEmail}
+		UserBoundary[] result = this.restTemplate.getForObject(url, UserBoundary[].class, this.projectName, adminEmail,3,0);
+		
+		List<UserBoundary> users = 
+				Arrays.stream(result)
+				.filter(user->user.getRole() != UserRole.ADMIN)
+				.collect(Collectors.toList());
+
+		assertThat(users).hasSize(2);
+		// THEN The server returns status 2xx
+		
+		
+	}
 	
 }
