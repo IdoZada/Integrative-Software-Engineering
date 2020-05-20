@@ -172,7 +172,5 @@ public class Element_tests {
 				new CreatedBy(new UserId(this.projectName, "Player12@gmail.com")), new Location(3.35, 4.545), new HashMap<>());
 		
 		assertThrows(Exception.class, () -> this.restTemplate.postForObject(this.url, element, ElementBoundary.class, this.projectName, "Player1@gmail.com"));
-		
 	}
-
 }
