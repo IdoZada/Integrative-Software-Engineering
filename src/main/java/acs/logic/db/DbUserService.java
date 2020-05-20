@@ -65,7 +65,7 @@ public class DbUserService implements ExtendedUserService{
 			throw new RuntimeException("User Avatar Can Not Be Null Or Empty");
 		if(userDao.findById(user.getUserId().getDomain()+"@@"+user.getUserId().getEmail()).isPresent())
 			throw new RuntimeException("User Email Is Already Exist");
-		
+		System.err.println(user.getUserId().getEmail());
 		user.setUserId(new UserId(this.projectName, user.getUserId().getEmail()));
 		UserEntity userEntity = this.userEntityConverter.toEntity(user);
 		return this.userEntityConverter.fromEntity(this.userDao.save(userEntity));	
@@ -115,7 +115,7 @@ public class DbUserService implements ExtendedUserService{
 	@Override
 	@Transactional(readOnly = true)
 	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail) { 
-		if(userDao.findById(adminDomain+"@@"+adminDomain).get().getRole().equals(UserRole.ADMIN)) {
+		if(userDao.findById(adminDomain+"@@"+adminEmail).get().getRole().equals(UserRole.ADMIN)) {
 			return StreamSupport
 					.stream(this.userDao
 					.findAll()
@@ -131,7 +131,7 @@ public class DbUserService implements ExtendedUserService{
 	@Override
 	@Transactional
 	public void deleteAllUsers(String adminDomain, String adminEmail) {
-		if(userDao.findById(adminDomain+"@@"+adminDomain).get().getRole().equals(UserRole.ADMIN)) {
+		if(userDao.findById(adminDomain+"@@"+adminEmail).get().getRole().equals(UserRole.ADMIN)) {
 			this.userDao.deleteAll();
 		}else {
 			throw new UnauthorizedException("Only Admin Can Delete All Users");
@@ -141,7 +141,7 @@ public class DbUserService implements ExtendedUserService{
 	@Override
 	@Transactional(readOnly = true)
 	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail, int size, int page) {
-		if(userDao.findById(adminDomain+"@@"+adminDomain).get().getRole().equals(UserRole.ADMIN)) {
+		if(userDao.findById(adminDomain+"@@"+adminEmail).get().getRole().equals(UserRole.ADMIN)) {
 			return StreamSupport
 					.stream(this.userDao
 					.findAll(PageRequest.of(page, size, Direction.ASC, "userId"))
