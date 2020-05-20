@@ -1,5 +1,6 @@
 package acs;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.annotation.PostConstruct;
 
@@ -30,7 +34,9 @@ public class Element_tests {
 	private String url;
 	private RestTemplate restTemplate;
 	private String projectName;
-	private String email;
+	private String playerEmail;
+	private String managerEmail;
+	private String adminEmail;
 
 	@LocalServerPort
 	public void setPort(int port) {
@@ -46,68 +52,76 @@ public class Element_tests {
 	@PostConstruct
 	public void init() {// url - > /acs/elements/{managerDomain}/{managerEmail}
 		this.url = "http://localhost:" + this.port + "/acs/elements/{managerDomain}/{managerEmail}";
-		this.email = "daniel@gmail.com";
+		this.adminEmail = "admin@gmail.com";
+		this.managerEmail = "manager@gmail.com";
+		this.playerEmail = "player@gmail.com";
 		this.restTemplate = new RestTemplate();
 		
 		
-		NewUserDetails adminUser = new NewUserDetails(UserRole.ADMIN, "Admin", "Admin@gmail.com", ";-)");
-		NewUserDetails managerUser = new NewUserDetails(UserRole.MANAGER, "Manager", "Manager@gmail.com", ":-)");
-		NewUserDetails simpleUser1 = new NewUserDetails(UserRole.PLAYER, "Player1", "Player1@gmail.com", ":)");
-		NewUserDetails simpleUser2 = new NewUserDetails(UserRole.PLAYER, "Player2", "Player2@gmail.com", ":>)");
-		NewUserDetails simpleUser3 = new NewUserDetails(UserRole.PLAYER, "Player3", "Player3@gmail.com", ":->)");
-		this.restTemplate.postForObject("/acs/users", adminUser, UserBoundary.class);
-		this.restTemplate.postForObject("/acs/users", managerUser, UserBoundary.class);
-		this.restTemplate.postForObject("/acs/users", simpleUser1, UserBoundary.class);
-		this.restTemplate.postForObject("/acs/users", simpleUser2, UserBoundary.class);
-		this.restTemplate.postForObject("/acs/users", simpleUser3, UserBoundary.class);
+//		Create Admin
+		NewUserDetails admin = new NewUserDetails();
+		admin.setAvatar(":)");
+		admin.setRole(UserRole.ADMIN);
+		admin.setEmail(this.adminEmail);
+		admin.setUsername("admin");
+		this.restTemplate.postForObject("http://localhost:" + this.port + "/acs/users", admin, UserBoundary.class);
 		
-		ElementBoundary element1 = new ElementBoundary(new ElementId(this.projectName, ""), "garden", false, "rotshild", null,
-				null, new Location(3.3, 4.5), new HashMap<>());
-		ElementBoundary element2 = new ElementBoundary(new ElementId(this.projectName, ""), "garden", true, "tel aviv", null,
-				null, new Location(3.3, 4.5), new HashMap<>());
+//		Create Manager
+		NewUserDetails manager = new NewUserDetails();
+		manager.setAvatar(":)");
+		manager.setRole(UserRole.MANAGER);
+		manager.setEmail(this.managerEmail);
+		manager.setUsername("manager");
+		this.restTemplate.postForObject("http://localhost:" + this.port + "/acs/users", manager, UserBoundary.class);
 		
-		this.restTemplate.postForObject(this.url, element1, ElementBoundary.class,this.projectName, this.email);
-		this.restTemplate.postForObject(this.url, element2, ElementBoundary.class,this.projectName, this.email);
+	
+		//Create Player 
+		NewUserDetails player = new NewUserDetails();
+		player.setAvatar(":)");
+		player.setRole(UserRole.PLAYER);
+		player.setEmail(this.playerEmail);
+		player.setUsername("player");
+		this.restTemplate.postForObject("http://localhost:" + this.port + "/acs/users", player, UserBoundary.class);
+		
 	}
 	
 
 	@AfterEach
 	public void teardown() {
 		this.restTemplate.delete("http://localhost:" + this.port + "/acs/admin/elements/{adminDomain}/{adminEmail}",
-				this.projectName, this.email);
+				this.projectName, this.adminEmail);
 	}
-
+	
 	@Test
 	public void testCreateElementAndValidateThatReturnElementWithId() {
 
 		// GIVEN the server is up AND database is empty
 		// WHEN I POST /acs/elements/{managerDomain}/{managerEmail} AND send a element
 		// boundary without Id
-		ElementBoundary input = new ElementBoundary(new ElementId(this.projectName, ""), "test", true, "Element", null,
-				null, new Location(3.3, 4.5), new HashMap<>());
+		ElementBoundary input = new ElementBoundary(new ElementId(this.projectName,null), "test", true, "Element", null,
+				new CreatedBy(new UserId(this.projectName, this.managerEmail)), new Location(3.3, 4.5), new HashMap<>());
 		ElementBoundary output = this.restTemplate.postForObject(this.url, input, ElementBoundary.class,
-				this.projectName, this.email);
+				this.projectName, this.managerEmail);
 
 		// THEN the server returns status 2xx
 		// AND retrieves a element with a new Id
 		assertThat(output.getElementId().getId()).isNotEmpty();
 
 	}
-
+	
 	@Test
 	public void testUpdateInvaildElementAndValidateThatExceptionIsThrow() {
 
 		// GIVEN the server is up AND database is empty
-		// WHEN I PUT /acs/elements/{managerDomain}/{managerEmail} AND send a element
+		// WHEN I PUT /acs/elements/{managerDomain}/{managerEmail}/{elementDomain}/{elementId} AND send a element
 		// boundary with null elementId
-		ElementBoundary input = new ElementBoundary(null, "test", true, "Element", null, null, new Location(3.3, 4.5),
-				new HashMap<>());
+		ElementBoundary input = new ElementBoundary(new ElementId(this.projectName,null), "test", true, "Element",null , new CreatedBy(new UserId(this.projectName, this.playerEmail)), new Location(3.3, 4.5),new HashMap<>());
 
 		
 		// THEN the server returns status 4xx
 		// AND throw exception
-		assertThrows(Exception.class, () -> this.restTemplate.put(this.url, input, ElementBoundary.class,
-				this.projectName, this.email));
+		assertThrows(Exception.class, () -> this.restTemplate.put(this.url + "/{elementDomain}/{elementId}", input, ElementBoundary.class,
+				this.projectName, this.managerEmail,this.projectName , "abcde"));
 
 	}
 
@@ -116,14 +130,13 @@ public class Element_tests {
 		// GIVEN server is up
 
 		// WHEN I POST /acs/elements/{managerDomain}/{managerEmail} with new element
-		ElementBoundary input = new ElementBoundary(new ElementId(projectName, null), "", null, "tomer", null,
-				new CreatedBy(new UserId("2020t", "tomer@gmail.com")), null, new HashMap<>());
+		ElementBoundary input = new ElementBoundary(new ElementId(projectName, null), "NewElement", true, "tomer", null,
+				new CreatedBy(new UserId(this.projectName, this.managerEmail)), new Location(3.3, 4.5), new HashMap<>());
 
-		String managerDomain = input.getCreatedBy().getUserId().getDomain();
-		String managerEmail = input.getCreatedBy().getUserId().getEmail();
+		
 
-		ElementBoundary output = this.restTemplate.postForObject(this.url, input, ElementBoundary.class, managerDomain,
-				managerEmail);
+		ElementBoundary output = this.restTemplate.postForObject(this.url, input, ElementBoundary.class, this.projectName,
+				this.managerEmail);
 
 		// THEN the server returns status 2xx
 		// AND retrieves a element with same name as sent to server
@@ -131,27 +144,27 @@ public class Element_tests {
 			throw new Exception("expected simplar name to input but received: " + output.getName());
 		}
 	}
-	
+		
 	@Test
 	public void testPostNewElementAndValidateTheDatabseContainsASingleElementWithTheSameElementAttribute() throws Exception {
 		// GIVEN server is up
 		
 		// WHEN I POST /acs/elements/{managerDomain}/{managerEmail} with new element
-		ElementBoundary input = new ElementBoundary(new ElementId(projectName,null), "tm", true, "tomer", null, new CreatedBy(new UserId("2020t", "tomer@gmail.com")), null, new HashMap<>());
+		ElementBoundary input = new ElementBoundary(new ElementId(this.projectName,null), "tm", true, "tomer", null, new CreatedBy(new UserId(this.projectName, this.managerEmail)), null, new HashMap<>());
 		
-		String managerDomain = input.getCreatedBy().getUserId().getDomain();
-		String managerEmail = input.getCreatedBy().getUserId().getEmail();
+//		String managerDomain = input.getCreatedBy().getUserId().getDomain();
+//		String managerEmail = input.getCreatedBy().getUserId().getEmail();
 		this.restTemplate
 		.postForObject(
 				this.url, 
 				input, 
-				ElementBoundary.class,managerDomain,managerEmail);
+				ElementBoundary.class,this.projectName,managerEmail);
 		
 		// THEN server contains a single Element in the database
 		// AND it's element attribute is similar input's
 		ElementBoundary[] output = 
 		  this.restTemplate
-			.getForObject(this.url, ElementBoundary[].class,managerDomain, managerEmail);
+			.getForObject(this.url +"?size=5&page=0", ElementBoundary[].class,this.projectName, this.managerEmail);
 		
 		assertThat(output).hasSize(1);
 					
@@ -169,8 +182,38 @@ public class Element_tests {
 	
 	@Test
 	public void testGetAllElementsByPlayerNotContainsNonActiveElements() throws Exception{
-		
+		// GIVEN the database contains 5 elements
+				// POST /acs/elements/{managerDomain}/{managerEmail}
+				List<ElementBoundary> databaseContent = IntStream.range(1, 5) // Stream<Integer> 1,2,3,4,5
+						.mapToObj(i -> "Element" + i) // Stream<String>
+						.map(newElement -> new ElementBoundary(new ElementId(this.projectName,null), newElement, true, newElement, null, new CreatedBy(new UserId(this.projectName, this.managerEmail)), null, new HashMap<>()))// Stream<ElementBoundary>
+						.map(newElement -> this.restTemplate.postForObject(this.url, newElement, ElementBoundary.class , this.projectName,this.managerEmail))// Stream<UserBoundary>
+						.collect(Collectors.toList());// List<UserBoundary>
+				
+		//AND Add 2 inactive elements to database 
+				 
+				 databaseContent.add(
+						  this.restTemplate
+							.postForObject(this.url, new ElementBoundary(new ElementId(this.projectName,null), "Element 5", false, "Element 5", null, new CreatedBy(new UserId(this.projectName, this.managerEmail)), null, new HashMap<>()), 
+									ElementBoundary.class, this.projectName,this.managerEmail));
+				 
+				 databaseContent.add(
+						  this.restTemplate
+							.postForObject(this.url, new ElementBoundary(new ElementId(this.projectName,null), "Element 6", false, "Element 6", null, new CreatedBy(new UserId(this.projectName, this.managerEmail)), null, new HashMap<>()), 
+									ElementBoundary.class, this.projectName,this.managerEmail));
+				 assertThat(databaseContent).hasSize(6);	 
 	}
+	
+	
+//	public void testGetAllElementsWithPagination() {
+//		//GIVEN server is up and database contains 4 elements 
+//		//WHEN we GET "/acs/elements/{userDomain}/{userEmail}?size=4&page=0"
+//		
+//		
+//		//THEN 
+//		
+//			
+//	}
 	
 	
 }

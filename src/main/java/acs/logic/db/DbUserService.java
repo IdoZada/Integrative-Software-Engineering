@@ -119,7 +119,7 @@ public class DbUserService implements ExtendedUserService{
 	@Override
 	@Transactional(readOnly = true)
 	public List<UserBoundary> getAllUsers(String adminDomain, String adminEmail) { 
-		if(userDao.findById(adminDomain+"@@"+adminDomain).get().getRole().equals(UserRole.ADMIN)) {
+		if(userDao.findById(adminDomain+"@@"+adminEmail).get().getRole().equals(UserRole.ADMIN)) {
 			return StreamSupport
 					.stream(this.userDao
 					.findAll()

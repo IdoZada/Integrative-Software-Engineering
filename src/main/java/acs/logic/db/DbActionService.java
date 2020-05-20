@@ -93,6 +93,7 @@ public class DbActionService implements ExtendedActionService{
 	}
 
 	@Override
+	@Transactional
 	public void deleteAllActions(String adminDomain, String adminEmail) {
 		String adminId = adminDomain + "@@" + adminEmail;
 		UserEntity invoker = this.userDao.findById(adminId)
@@ -104,6 +105,7 @@ public class DbActionService implements ExtendedActionService{
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<ActionBoundary> getAllActions(String adminDomain, String adminEmail, int size, int page) {
 		if(userDao.findById(adminDomain+"@@"+adminEmail).get().getRole().equals(UserRole.ADMIN)) {
 			return StreamSupport

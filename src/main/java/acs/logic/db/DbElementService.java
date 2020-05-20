@@ -8,6 +8,7 @@ import java.util.stream.StreamSupport;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -32,6 +33,7 @@ public class DbElementService implements ExtendedElementService{
 	private ElementEntityConverter elementEntityConverter;
 	private UserDao userDao;
 	
+	@Autowired
 	public DbElementService(ElementDao elementDao, ElementEntityConverter elementEntityConverter, UserDao userDao) {
 		this.elementDao = elementDao;
 		this.elementEntityConverter = elementEntityConverter;
@@ -77,7 +79,10 @@ public class DbElementService implements ExtendedElementService{
 	public ElementBoundary update(String managerDomain, String managerEmail, String elementDomain, String elementId,ElementBoundary update) {
 		
 		if(userDao.findById(managerDomain+"@@"+managerEmail).get().getRole().equals(UserRole.MANAGER)) {
-			ElementBoundary existing = this.getSpecificElement(managerDomain, managerEmail, elementDomain, elementId);
+			ElementBoundary existing = this.elementEntityConverter.fromEntity(this.elementDao.findById(elementDomain + "@@" + elementId)
+					.orElseThrow(()->new NotFoundException("No element for id: " + elementId)));
+//					this.getSpecificElement(managerDomain, managerEmail, elementDomain, elementId);
+
 			
 			if(update.getType() != null) {
 				existing.setType(update.getType());

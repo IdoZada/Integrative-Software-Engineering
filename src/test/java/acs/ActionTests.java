@@ -8,6 +8,7 @@ import java.util.HashMap;
 import javax.annotation.PostConstruct;
 
 import org.junit.AfterClass;
+import org.junit.Ignore;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +38,7 @@ public class ActionTests {
 	private String domain;
 	private String adminEmail;
 	private String managerEmail;
+	private String playerEmail;
 	private RestTemplate restTemplate;
 	
 	@LocalServerPort
@@ -49,6 +51,7 @@ public class ActionTests {
 		this.domain = projectName;
 		this.adminEmail = "admin@" + this.domain + ".com";
 		this.managerEmail = "manager@" + this.domain + ".com";
+		this.playerEmail = "player@" + this.domain + ".com";
 	}
 	
 	@PostConstruct
@@ -65,28 +68,30 @@ public class ActionTests {
 		// Create Manager
 		NewUserDetails manager = new NewUserDetails();
 		manager.setAvatar(":)");
-		manager.setRole(UserRole.ADMIN);
+		manager.setRole(UserRole.MANAGER);
 		manager.setEmail(this.managerEmail);
 		manager.setUsername("manager");
 		this.restTemplate.postForObject(this.url + "/users", manager, UserBoundary.class);
+		//Create Player
+		NewUserDetails player = new NewUserDetails();
+		player.setAvatar(":)");
+		player.setRole(UserRole.PLAYER);
+		player.setEmail(this.playerEmail);
+		player.setUsername("player");
+		this.restTemplate.postForObject(this.url + "/users", player, UserBoundary.class);
 	}
 	
-	@AfterClass
-	public void deleteUsers() {
-		this.restTemplate.delete(url + "/admin/users/{domain}/{email}"
-				,this.domain,this.adminEmail);
-	}
+//	@AfterClass
+//	public void deleteUsers() {
+//		this.restTemplate.delete(url + "/admin/users/{domain}/{email}"
+//				,this.domain,this.adminEmail);
+//	}
 	
-	@BeforeEach
-	public void setup() {
-	}
 	
 	@AfterEach
 	public void teardown() {
 		this.restTemplate
 		.delete(this.url + "/admin/actions/{domain}/{email}",domain,adminEmail);
-		this.restTemplate
-			.delete(this.url + "/admin/elements/{domain}/{email}",domain,adminEmail);
 	}
 	
 	@Test
@@ -94,15 +99,15 @@ public class ActionTests {
 		ElementBoundary elementBoundary = new ElementBoundary(null, "regular", true,
 				"dugma", new Date(), null, new Location(25.3, 13.2),
 				new HashMap<String,Object>());
-		elementBoundary = this.restTemplate.postForObject(this.url + "/elements/{managerDomain}/{managerEmail}"
+		 ElementBoundary elementBoundary1 = this.restTemplate.postForObject(this.url + "/elements/{managerDomain}/{managerEmail}"
 				, elementBoundary, ElementBoundary.class, this.domain, this.managerEmail);
 		ActionBoundary action = new ActionBoundary();
-		action.setElement(new Element(new ElementId(this.domain,elementBoundary.getElementId().getId())));
+		action.setElement(new Element(new ElementId(this.domain,elementBoundary1.getElementId().getId())));
 		action.setType("dugma");
-		action.setInvokedBy(new InvokedBy(new UserId(this.domain, this.managerEmail)));
+		action.setInvokedBy(new InvokedBy(new UserId(this.domain, this.playerEmail)));
 		action.setActionAttributes(new HashMap<String, Object>());
 		this.restTemplate.postForObject(this.url + "/actions",action,Object.class);
-		ActionBoundary[] actions = this.restTemplate.getForObject(this.url + "/admin/actions/{domain}/{email}",
+		ActionBoundary[] actions = this.restTemplate.getForObject(this.url + "/admin/actions/{adminDomain}/{adminEmail}",
 				ActionBoundary[].class,this.domain,this.adminEmail);
 		assertThat(actions).hasSize(1);
 	}
