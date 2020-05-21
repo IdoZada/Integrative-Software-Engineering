@@ -1,5 +1,6 @@
 package acs;
 
+import org.junit.AfterClass;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,13 +50,12 @@ public class Element_tests {
 		this.url = "http://localhost:" + this.port + "/acs/elements/{managerDomain}/{managerEmail}";
 		this.managerEmail = "Manager@gmail.com";
 		this.restTemplate = new RestTemplate();
-		
+		NewUserDetails adminUser = new NewUserDetails(UserRole.ADMIN, "Admin", "Admin@gmail.com", ";-)");
+		this.restTemplate.postForObject("http://localhost:" + this.port + "/acs/users", adminUser, UserBoundary.class);
 	}
 	
 	@BeforeEach
 	public void dbInjection() {
-		NewUserDetails adminUser = new NewUserDetails(UserRole.ADMIN, "Admin", "Admin@gmail.com", ";-)");
-		this.restTemplate.postForObject("http://localhost:" + this.port + "/acs/users", adminUser, UserBoundary.class);
 		NewUserDetails managerUser = new NewUserDetails(UserRole.MANAGER, "Manager", "Manager@gmail.com", ":-)");
 		NewUserDetails simpleUser1 = new NewUserDetails(UserRole.PLAYER, "Player1", "Player1@gmail.com", ":)");
 		NewUserDetails simpleUser2 = new NewUserDetails(UserRole.PLAYER, "Player2", "Player2@gmail.com", ":>)");
@@ -83,6 +83,11 @@ public class Element_tests {
 				this.projectName, "Admin@gmail.com");
 		this.restTemplate.delete("http://localhost:" + this.port + "/acs/admin/users/{adminDomain}/{adminEmail}",
 				this.projectName, "Admin@gmail.com");
+	}
+	
+	@AfterClass
+	public void deleteUsers() {
+		this.restTemplate.delete("http://localhost:" + this.port + "/acs/admin/users/{adminDomain}/{adminEmail}", this.projectName, "Admin@gmail.com");
 	}
 
 	@Test
