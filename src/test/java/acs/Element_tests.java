@@ -125,7 +125,7 @@ public class Element_tests {
 
 		// WHEN I POST /acs/elements/{managerDomain}/{managerEmail} with new element
 		ElementBoundary input = new ElementBoundary(new ElementId(projectName, null), "", null, "Ido", null,
-				new CreatedBy(new UserId(this.projectName, this.managerEmail)), null, new HashMap<>());
+				new CreatedBy(new UserId(this.projectName, this.managerEmail)), new Location(3.3, 4.5), new HashMap<>());
 
 		String managerDomain = input.getCreatedBy().getUserId().getDomain();
 		String managerEmail = input.getCreatedBy().getUserId().getEmail();
@@ -146,7 +146,7 @@ public class Element_tests {
 		
 		// WHEN I POST /acs/elements/{managerDomain}/{managerEmail} with new element
 		ElementBoundary input = new ElementBoundary(
-					new ElementId(projectName,"tester"), "tm", true, "Ido", null, new CreatedBy(new UserId(this.projectName, this.managerEmail)), null, new HashMap<>());
+					new ElementId(projectName,"tester"), "tm", true, "Ido", null, new CreatedBy(new UserId(this.projectName, this.managerEmail)), new Location(23.3,25.1), new HashMap<>());
 		
 		String managerDomain = input.getCreatedBy().getUserId().getDomain();
 		String managerEmail = input.getCreatedBy().getUserId().getEmail();

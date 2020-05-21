@@ -63,6 +63,9 @@ public class DbElementService implements ExtendedElementService{
 			if(element.getType() == null) {
 				throw new RuntimeException("Element Type Can Not Be Null");
 			}
+			if(element.getLocation() == null) {
+				throw new RuntimeException("Element Location Can Not Be Null");
+			}
 			ElementEntity entity = this.elementEntityConverter.toEntity(element);
 			entity.setElementId(this.projectName + "@@" + key);
 			entity.setCreatedTimestamp(new Date());
