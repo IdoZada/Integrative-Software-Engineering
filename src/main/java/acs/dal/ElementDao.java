@@ -67,17 +67,17 @@ public interface ElementDao extends PagingAndSortingRepository<ElementEntity, St
 	
 	public List<ElementEntity> findAllByLocation_LatBetweenAndLocation_LngBetweenAndActive(
 			@Param("lat") double minLat,
-			@Param("lat") double maxLat,
+			@Param("lat2") double maxLat,
 			@Param("lng") double minLng,
-			@Param("lng") double maxLng,
+			@Param("lng2") double maxLng,
 			@Param("active") boolean active,
 			Pageable pageable);
 		
 	public List<ElementEntity> findAllByLocation_LatBetweenAndLocation_LngBetween(
 			@Param("lat") double minLat,
-			@Param("lat") double maxLat,
+			@Param("lat2") double maxLat,
 			@Param("lng") double minLng,
-			@Param("lng") double maxLng,
+			@Param("lng2") double maxLng,
 			Pageable pageable);
 		
 }

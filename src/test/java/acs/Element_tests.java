@@ -22,7 +22,9 @@ import acs.data.UserRole;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -67,9 +69,9 @@ public class Element_tests {
 		this.restTemplate.postForObject("http://localhost:" + this.port + "/acs/users", simpleUser3, UserBoundary.class);
 		
 		ElementBoundary element1 = new ElementBoundary(new ElementId(this.projectName, ""), "garden", false, "rotshild", null,
-				null, new Location(31.877812470456607, 34.81664447789716), new HashMap<>());
+				null, new Location(31.877854, 34.816920), new HashMap<>());
 		ElementBoundary element2 = new ElementBoundary(new ElementId(this.projectName, ""), "garden", true, "tel aviv", null,
-				null, new Location(31.880408,  34.812803), new HashMap<>());
+				null, new Location(31.878774, 34.812328), new HashMap<>());
 		
 		this.restTemplate.postForObject(this.url, element1, ElementBoundary.class,this.projectName, this.managerEmail);
 		this.restTemplate.postForObject(this.url, element2, ElementBoundary.class,this.projectName, this.managerEmail);
@@ -186,22 +188,55 @@ public class Element_tests {
 		
 	}
 	
-//	@Test
-//	public void testGetAllElementsWithDistanceOfOneKm() {
+	@Test
+	public void testGetAllElementsByManagerWithDistanceOfOneKm() {
+		// GIVEN server is up
+		//AND DB server is up and have to elements
+		//WHEN i GET "/acs/elements/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}"
+		
+		
+		ElementBoundary[] element = this.restTemplate.getForObject(
+				"http://localhost:" + this.port + "/acs/elements/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}?size=5&page=0"
+				, ElementBoundary[].class
+				, this.projectName,this.managerEmail,31.878501, 34.814066,1,2,0);
+		
+		//THEN we get 2 elements
+		assertThat(element).hasSize(2);
+		
+//		"/acs/elements/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}"
+//		31.879249, 34.814715 
 //		
-//		ElementBoundary[] element = this.restTemplate.getForObject(
-//				"http://localhost:" + this.port + "/acs/elements/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}?size=5&page=0"
-//				, ElementBoundary[].class
-//				, this.projectName,"Player1@gmail.com",31.879249,34.814715,100000,2,0);
-//		
-//		
-//		assertThat(element).hasSize(2);
-//		
-////		"/acs/elements/{userDomain}/{userEmail}/search/near/{lat}/{lng}/{distance}"
-////		31.879249, 34.814715 
-//		
-////		31.861808, 34.804417
-//		
-//	}
+//		31.861808, 34.804417
+		
+	}
 	
+
+	@Test
+	public void testUpdateElementWithActiveByManger() {
+		
+		ElementBoundary element3 = new ElementBoundary(new ElementId(this.projectName, ""), "garden", false, "tel aviv", null,
+				null, new Location(31.880408,  34.812803), new HashMap<>());
+		ElementBoundary update = new ElementBoundary(null, "garden", true, "tel aviv", null,
+				null, null, null);
+		
+		
+		ElementBoundary elementBoundary = this.restTemplate.postForObject(this.url, element3, ElementBoundary.class,this.projectName, this.managerEmail);
+		this.restTemplate.put(this.url + "/{elementDomain}/{elementId}",
+				update,
+				this.projectName,
+				this.managerEmail,
+				elementBoundary.getElementId().getDomain(),
+				elementBoundary.getElementId().getId());
+		
+		ElementBoundary output = this.restTemplate.getForObject(
+				this.url + "/{elementDomain}/{elementId}",
+				ElementBoundary.class,
+				this.projectName,
+				this.managerEmail,
+				elementBoundary.getElementId().getDomain(),
+				elementBoundary.getElementId().getId());
+		
+		assertThat(output).extracting("active").isEqualTo(true);
+		
+	}
 }

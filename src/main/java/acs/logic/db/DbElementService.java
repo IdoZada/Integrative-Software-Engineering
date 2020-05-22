@@ -299,17 +299,21 @@ public class DbElementService implements ExtendedElementService{
 	public ElementBoundary[] getAllByLocation(String userDomain, String userEmail, double lat, double lng,
 			double distance, int size, int page) {
 		
-		// number of km per degree = ~111km (111.32 in google maps, but range varies
-		// between 110.567km at the equator and 111.699km at the poles)
-		// 1km in degree = 1 / 111.32km = 0.0089
-		// 1m in degree = 0.0089 / 1000 = 0.0000089
-		double coef = distance * 0.0000089;
-		double maxLat = lat + coef;
-		double minLat = lat - coef;
-
-		// pi / 180 = 0.018
-		double minLng = lng + coef / Math.cos(lat * 0.018);
-		double maxLng = lng - coef / Math.cos(lat * 0.018);
+		double earthRadius = 6378.137;
+		double pi = Math.PI;
+		double cos = Math.cos(lat * (pi / 180));
+		double oneKMeter = (1/((2*pi/360)*earthRadius));
+		
+		double maxLat = lat + (distance * oneKMeter);
+		System.out.println(maxLat+"\n");
+		double minLat = lat - (distance * oneKMeter);
+		System.out.println(minLat+"\n");
+		double maxLng = lng + ((distance * oneKMeter)/cos);
+		System.out.println(maxLng+"\n");
+		double minLng = lng - ((distance * oneKMeter)/cos);
+		System.out.println(minLng+"\n");
+		
+		
 		
 		if(userDao.findById(userDomain+"@@"+userEmail).get().getRole().equals(UserRole.PLAYER)) {
 			return this.elementDao.findAllByLocation_LatBetweenAndLocation_LngBetweenAndActive(
