@@ -2,6 +2,10 @@ package acs.boundary.boundaryUtils;
 
 import java.util.Map;
 
+import javax.persistence.Convert;
+import javax.persistence.Lob;
+
+import acs.dal.GardenMapToJsonConverter;
 import acs.data.FacilityType;
 
 public class GardenInfo {
@@ -12,7 +16,7 @@ public class GardenInfo {
 	
 	
 	public GardenInfo() {
-
+		
 	}
 
 	
@@ -42,7 +46,8 @@ public class GardenInfo {
 		this.capacity = capacity;
 	}
 
-
+	@Convert(converter = GardenMapToJsonConverter.class)
+	@Lob
 	public Map<FacilityType, String> getFacilityTypes() {
 		return facilityTypes;
 	}

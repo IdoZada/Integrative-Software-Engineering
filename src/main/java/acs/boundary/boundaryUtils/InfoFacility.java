@@ -1,5 +1,8 @@
 package acs.boundary.boundaryUtils;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 import acs.data.FacilityStatus;
 import acs.data.FacilityType;
 import acs.data.MuscaleGroup;
@@ -29,7 +32,7 @@ public class InfoFacility {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+	@Enumerated(EnumType.STRING)
 	public FacilityType getType() {
 		return type;
 	}
@@ -37,7 +40,7 @@ public class InfoFacility {
 	public void setType(FacilityType type) {
 		this.type = type;
 	}
-	
+	@Enumerated(EnumType.STRING)
 	public FacilityStatus getStatus() {
 		return status;
 	}
@@ -45,7 +48,7 @@ public class InfoFacility {
 	public void setStatus(FacilityStatus status) {
 		this.status = status;
 	}
-	
+	@Enumerated(EnumType.STRING)
 	public MuscaleGroup getMus_group() {
 		return mus_group;
 	}
