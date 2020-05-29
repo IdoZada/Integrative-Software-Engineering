@@ -17,10 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import acs.boundary.ElementBoundary;
 import acs.boundary.ElementIdBoundary;
+import acs.boundary.boundaryUtils.GardenInfo;
+import acs.boundary.boundaryUtils.InfoFacility;
 import acs.converter.ElementEntityConverter;
 import acs.dal.ElementDao;
 import acs.dal.UserDao;
 import acs.data.ElementEntity;
+import acs.data.FacilityType;
 import acs.data.UserRole;
 import acs.logic.ExtendedElementService;
 import acs.logic.NotFoundException;
@@ -66,10 +69,21 @@ public class DbElementService implements ExtendedElementService{
 			if(element.getLocation() == null) {
 				throw new RuntimeException("Element Location Can Not Be Null");
 			}
+			
 			ElementEntity entity = this.elementEntityConverter.toEntity(element);
 			entity.setElementId(this.projectName + "@@" + key);
 			entity.setCreatedTimestamp(new Date());
 			entity.setCreatedBy(managerDomain + "@@" + managerEmail);
+			
+			if(element.getType().equals("Garden")) { 
+				GardenInfo info = new GardenInfo();
+				entity.getElementAttributes().put("Info", info);
+			}
+			if(element.getType().equals("Facility")) {//TODO insert information into Garden & Facility *****************
+				InfoFacility info = new InfoFacility();
+				entity.getElementAttributes().put("Info", info);
+			}
+			
 			return this.elementEntityConverter.fromEntity(this.elementDao.save(entity));
 		}
 		else {
@@ -166,6 +180,9 @@ public class DbElementService implements ExtendedElementService{
 								.orElseThrow(() -> new NotFoundException("No Element For Id: " + elementIdBoundary.getId()));
 			
 			origin.addChildElement(child);
+			GardenInfo originInfo = (GardenInfo)origin.getElementAttributes().get("Info");
+			InfoFacility childInfo = (InfoFacility)child.getElementAttributes().get("Info");
+			originInfo.getFacilityTypes().put(FacilityType.air_walker,child.getElementId());
 			this.elementDao.save(origin);
 		}
 		else
@@ -221,14 +238,14 @@ public class DbElementService implements ExtendedElementService{
 			String elementDomain, String elementId, int size, int page) {
 		if(userDao.findById(userDomain+"@@"+userEmail).get().getRole().equals(UserRole.PLAYER)) {
 			return elementDao
-					.findAllByChildElementsLikeAndActive(elementId, true, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
+					.findAllByOrigin_ElementIdAndActive(elementDomain+"@@"+elementId, true, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 		}
 		else {
 			return elementDao
-					.findAllByChildElementsLike(elementId, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
+					.findAllByOrigin_ElementId(elementDomain+"@@"+elementId, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
@@ -241,14 +258,14 @@ public class DbElementService implements ExtendedElementService{
 			String elementId, int size, int page) {
 		if(userDao.findById(userDomain+"@@"+userEmail).get().getRole().equals(UserRole.PLAYER)) {
 			return elementDao
-					.findAllByOrigin_ElementIdAndActive(elementId, true, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
+					.findAllOriginByChildElements_ElementIdLikeAndActive(elementDomain+"@@"+elementId, true, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 		}
 		else {
 			return elementDao
-					.findAllByOrigin_ElementId(elementId, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
+					.findAllOriginByChildElements_ElementIdLike(elementDomain+"@@"+elementId, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
