@@ -48,11 +48,11 @@ public interface ElementDao extends PagingAndSortingRepository<ElementEntity, St
 			@Param("active") Boolean expectActive,
 			Pageable pageable);
 	
-	public List<ElementEntity> findAllByChildElementsLike(
-			@Param("childElements") String expectChildElement,
+	public List<ElementEntity> findAllOriginByChildElements_ElementIdLike(
+			@Param("elementId") String expectChildElementId,
 			Pageable pageable);
 	
-	public List<ElementEntity> findAllByChildElementsLikeAndActive(
+	public List<ElementEntity> findAllOriginByChildElements_ElementIdLikeAndActive(
 			@Param("childElements") String expectChildElement,
 			@Param("active") Boolean expectActive,
 			Pageable pageable);
