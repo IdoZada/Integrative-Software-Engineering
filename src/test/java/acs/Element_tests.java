@@ -35,6 +35,8 @@ public class Element_tests {
 	private RestTemplate restTemplate;
 	private String projectName;
 	private String managerEmail;
+	private ElementBoundary gardenElement1;
+	private ElementBoundary gardenElement2;
 
 	@LocalServerPort
 	public void setPort(int port) {
@@ -68,14 +70,13 @@ public class Element_tests {
 		this.restTemplate.postForObject("http://localhost:" + this.port + "/acs/users", simpleUser2, UserBoundary.class);
 		this.restTemplate.postForObject("http://localhost:" + this.port + "/acs/users", simpleUser3, UserBoundary.class);
 		
-		ElementBoundary element1 = new ElementBoundary(new ElementId(this.projectName, ""), "garden", false, "rotshild", null,
+		ElementBoundary element1 = new ElementBoundary(new ElementId(this.projectName, ""), "Garden", false, "rotshild", null,
 				null, new Location(31.877854, 34.816920), new HashMap<>());
-		ElementBoundary element2 = new ElementBoundary(new ElementId(this.projectName, ""), "garden", true, "tel aviv", null,
+		ElementBoundary element2 = new ElementBoundary(new ElementId(this.projectName, ""), "Garden", true, "tel aviv", null,
 				null, new Location(31.878774, 34.812328), new HashMap<>());
 		
-		this.restTemplate.postForObject(this.url, element1, ElementBoundary.class,this.projectName, this.managerEmail);
-		this.restTemplate.postForObject(this.url, element2, ElementBoundary.class,this.projectName, this.managerEmail);
-		
+		gardenElement1 = this.restTemplate.postForObject(this.url, element1, ElementBoundary.class,this.projectName, this.managerEmail);
+		gardenElement2 = this.restTemplate.postForObject(this.url, element2, ElementBoundary.class,this.projectName, this.managerEmail);
 	}
 	
 	
@@ -238,5 +239,29 @@ public class Element_tests {
 		
 		assertThat(output).extracting("active").isEqualTo(true);
 		
+	}
+	
+	@Test
+	public void testBindElement() {
+		ElementBoundary facilityElement1 = new ElementBoundary(new ElementId(this.projectName, ""), "Facility", true, "tel aviv", null,
+				null, new Location(31.878774, 34.812328), new HashMap<>());
+		facilityElement1 = this.restTemplate.postForObject(this.url, facilityElement1, ElementBoundary.class,this.projectName, this.managerEmail);
+
+		this.restTemplate.put(this.url + 
+				"/{elementDomain}/{elementId}/children",
+				facilityElement1.getElementId(),
+				this.projectName,
+				this.managerEmail,
+				this.projectName,
+				this.gardenElement1.getElementId().getId());
+		assertThat(this.restTemplate.getForObject(this.url + 
+				"/{elementDomain}/{elementId}/children",
+				ElementBoundary[].class,
+				this.projectName,
+				this.managerEmail,
+				this.projectName,
+				this.gardenElement1.getElementId().getId()))
+		.usingRecursiveFieldByFieldElementComparator()
+		.containsExactly(facilityElement1);
 	}
 }

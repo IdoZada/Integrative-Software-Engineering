@@ -1,5 +1,6 @@
 package acs.boundary.boundaryUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.Convert;
@@ -16,7 +17,7 @@ public class GardenInfo {
 	
 	
 	public GardenInfo() {
-		
+		this.facilityTypes = new HashMap<>();
 	}
 
 	
