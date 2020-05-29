@@ -19,6 +19,7 @@ import acs.boundary.ElementBoundary;
 import acs.boundary.ElementIdBoundary;
 import acs.boundary.boundaryUtils.GardenInfo;
 import acs.boundary.boundaryUtils.InfoFacility;
+import acs.converter.AttributeConverter;
 import acs.converter.ElementEntityConverter;
 import acs.dal.ElementDao;
 import acs.dal.UserDao;
@@ -35,12 +36,15 @@ public class DbElementService implements ExtendedElementService{
 	private ElementDao elementDao;
 	private ElementEntityConverter elementEntityConverter;
 	private UserDao userDao;
+	private AttributeConverter attributeConverter;
 	
 	@Autowired
-	public DbElementService(ElementDao elementDao, ElementEntityConverter elementEntityConverter, UserDao userDao) {
+	public DbElementService(ElementDao elementDao, ElementEntityConverter elementEntityConverter,
+			UserDao userDao, AttributeConverter attributeConverter) {
 		this.elementDao = elementDao;
 		this.elementEntityConverter = elementEntityConverter;
 		this.userDao = userDao;
+		this.attributeConverter = attributeConverter;
 	}
 
 	// inject value from configuration or use default value
@@ -180,8 +184,9 @@ public class DbElementService implements ExtendedElementService{
 								.orElseThrow(() -> new NotFoundException("No Element For Id: " + elementIdBoundary.getId()));
 			
 			origin.addChildElement(child);
-			GardenInfo originInfo = (GardenInfo)origin.getElementAttributes().get("Info");
-			InfoFacility childInfo = (InfoFacility)child.getElementAttributes().get("Info");
+			attributeConverter.toAttribute(origin.getElementAttributes().get("Info"), GardenInfo.class);
+			GardenInfo originInfo = attributeConverter.toAttribute(origin.getElementAttributes().get("Info"), GardenInfo.class);
+			InfoFacility childInfo = attributeConverter.toAttribute(origin.getElementAttributes().get("Info"), InfoFacility.class);
 			originInfo.getFacilityTypes().put(FacilityType.air_walker,child.getElementId());
 			this.elementDao.save(origin);
 		}
