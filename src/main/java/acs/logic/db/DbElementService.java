@@ -184,9 +184,8 @@ public class DbElementService implements ExtendedElementService{
 								.orElseThrow(() -> new NotFoundException("No Element For Id: " + elementIdBoundary.getId()));
 			
 			origin.addChildElement(child);
-			attributeConverter.toAttribute(origin.getElementAttributes().get("Info"), GardenInfo.class);
 			GardenInfo originInfo = attributeConverter.toAttribute(origin.getElementAttributes().get("Info"), GardenInfo.class);
-			InfoFacility childInfo = attributeConverter.toAttribute(origin.getElementAttributes().get("Info"), InfoFacility.class);
+			InfoFacility childInfo = attributeConverter.toAttribute(child.getElementAttributes().get("Info"), InfoFacility.class);
 			originInfo.getFacilityTypes().put(FacilityType.air_walker,child.getElementId());
 			this.elementDao.save(origin);
 		}
