@@ -104,7 +104,7 @@ public class ActionTests {
 				, elementBoundary, ElementBoundary.class, this.domain, this.managerEmail);
 		ActionBoundary action = new ActionBoundary();
 		action.setElement(new Element(new ElementId(this.domain,elementBoundary.getElementId().getId())));
-		action.setType("dugma");
+		action.setType("get_info_garden");
 		action.setInvokedBy(new InvokedBy(new UserId(this.domain, this.userEmail)));
 		action.setActionAttributes(new HashMap<String, Object>());
 		this.restTemplate.postForObject(this.url + "/actions",action,Object.class);

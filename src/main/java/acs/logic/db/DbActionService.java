@@ -26,6 +26,7 @@ import acs.data.UserRole;
 import acs.logic.ExtendedActionService;
 import acs.logic.NotFoundException;
 import acs.logic.UnauthorizedException;
+import acs.logic.actionUtils.ClientActions;
 
 @Service
 public class DbActionService implements ExtendedActionService{
@@ -73,10 +74,12 @@ public class DbActionService implements ExtendedActionService{
 				.orElseThrow(()-> new NotFoundException("Element not found"));
 		if(!element.getActive() && invoker.getRole() == UserRole.PLAYER)
 				throw new RuntimeException("Element must be active");
+		
 		String key = UUID.randomUUID().toString();
 		action.setActionId(new ActionId(this.projectName, key));
 		action.setCreatedTimestamp(new Date());
-		return this.actionConverter.fromEntity(this.actionDao.save(this.actionConverter.toEntity(action)));
+		this.actionDao.save(this.actionConverter.toEntity(action));
+		return ClientActions.actionInvoker(action);
 	}
 
 	@Override

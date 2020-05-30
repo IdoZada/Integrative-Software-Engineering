@@ -79,14 +79,14 @@ public class DbElementService implements ExtendedElementService{
 			entity.setCreatedTimestamp(new Date());
 			entity.setCreatedBy(managerDomain + "@@" + managerEmail);
 			
-			if(element.getType().equals("Garden")) { 
-				GardenInfo info = new GardenInfo();
-				entity.getElementAttributes().put("Info", info);
-			}
-			if(element.getType().equals("Facility")) {//TODO insert information into Garden & Facility *****************
-				InfoFacility info = new InfoFacility();
-				entity.getElementAttributes().put("Info", info);
-			}
+//			if(element.getType().equals("Garden")) { 
+//				GardenInfo info = new GardenInfo();
+//				entity.getElementAttributes().put("Info", info);
+//			}
+//			if(element.getType().equals("Facility")) {//TODO insert information into Garden & Facility *****************
+//				InfoFacility info = new InfoFacility();
+//				entity.getElementAttributes().put("Info", info);
+//			}
 			
 			return this.elementEntityConverter.fromEntity(this.elementDao.save(entity));
 		}
@@ -136,7 +136,6 @@ public class DbElementService implements ExtendedElementService{
 	@Override
 	@Transactional(readOnly = true)
 	public List<ElementBoundary> getAll(String userDomain, String userEmail) {
-		
 		return StreamSupport.stream(
 				this.elementDao.findAll().spliterator(), false)
 				.map(this.elementEntityConverter::fromEntity)
@@ -147,15 +146,17 @@ public class DbElementService implements ExtendedElementService{
 	@Transactional(readOnly = true)
 	public ElementBoundary getSpecificElement(String userDomain, String userEmail, String elementDomain,
 			String elementId) {
-		if(userDao.findById(userDomain+"@@"+userEmail).get().getRole().equals(UserRole.PLAYER)) {
+		UserRole userRole1 = userDao.findById(userDomain+"@@"+userEmail).get().getRole();
+		if(userRole1.equals(UserRole.PLAYER)) {
 			
 			return this.elementEntityConverter.fromEntity(this.elementDao.findByElementIdAndActive((elementDomain + "@@" + elementId),true)
 					.orElseThrow(()->new NotFoundException("No element for id: " + elementId)));
 		}
-		else {
+		else if(userRole1.equals(UserRole.MANAGER)){
 			return this.elementEntityConverter.fromEntity(this.elementDao.findById(elementDomain + "@@" + elementId)
 					.orElseThrow(()->new NotFoundException("No element for id: " + elementId)));
 		}
+		throw new UnauthorizedException("Only player/manager can get specific element");
 	}
 		
 
@@ -184,9 +185,9 @@ public class DbElementService implements ExtendedElementService{
 								.orElseThrow(() -> new NotFoundException("No Element For Id: " + elementIdBoundary.getId()));
 			
 			origin.addChildElement(child);
-			GardenInfo originInfo = attributeConverter.toAttribute(origin.getElementAttributes().get("Info"), GardenInfo.class);
-			InfoFacility childInfo = attributeConverter.toAttribute(child.getElementAttributes().get("Info"), InfoFacility.class);
-			originInfo.getFacilityTypes().put(FacilityType.air_walker,child.getElementId());
+//			GardenInfo originInfo = attributeConverter.toAttribute(origin.getElementAttributes().get("Info"), GardenInfo.class);
+//			InfoFacility childInfo = attributeConverter.toAttribute(child.getElementAttributes().get("Info"), InfoFacility.class);
+//			originInfo.getFacilityTypes().put(childInfo.getType(),child.getElementId());
 			this.elementDao.save(origin);
 		}
 		else
@@ -219,100 +220,110 @@ public class DbElementService implements ExtendedElementService{
 	@Override
 	@Transactional(readOnly = true)
 	public List<ElementBoundary> getAll(String userDomain, String userEmail, int size, int page) {
-		if(userDao.findById(userDomain+"@@"+userEmail).get().getRole().equals(UserRole.PLAYER)) {
+		UserRole userRole = userDao.findById(userDomain+"@@"+userEmail).get().getRole();
+		if(userRole.equals(UserRole.PLAYER)) {
 			return elementDao
 					.findAllByActive(true,PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList());
 		}
-		else {
-			return elementDao
-					.findAll(PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
-					.getContent()
-					.stream()
-					.map(this.elementEntityConverter :: fromEntity)
-					.collect(Collectors.toList());
+		else if(userRole.equals(UserRole.MANAGER)) {
+				return elementDao
+						.findAll(PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
+						.getContent()
+						.stream()
+						.map(this.elementEntityConverter :: fromEntity)
+						.collect(Collectors.toList());
 		}
+		throw new UnauthorizedException("Admin cannot get all elements");
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public ElementBoundary[] getAllChildrenOfAnExistingElement(String userDomain, String userEmail,
 			String elementDomain, String elementId, int size, int page) {
-		if(userDao.findById(userDomain+"@@"+userEmail).get().getRole().equals(UserRole.PLAYER)) {
+		UserRole userRole = userDao.findById(userDomain+"@@"+userEmail).get().getRole();
+		if(userRole.equals(UserRole.PLAYER)) {
 			return elementDao
 					.findAllByOrigin_ElementIdAndActive(elementDomain+"@@"+elementId, true, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 		}
-		else {
+		else if(userRole.equals(UserRole.MANAGER)){
 			return elementDao
 					.findAllByOrigin_ElementId(elementDomain+"@@"+elementId, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 		}
+		throw new UnauthorizedException("Admin cannot get all Children Of An Existing Element ");
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public ElementBoundary[] getAnArrayWithElementParent(String userDomain, String userEmail, String elementDomain,
 			String elementId, int size, int page) {
-		if(userDao.findById(userDomain+"@@"+userEmail).get().getRole().equals(UserRole.PLAYER)) {
+		UserRole userRole = userDao.findById(userDomain+"@@"+userEmail).get().getRole();
+		if(userRole.equals(UserRole.PLAYER)) {
 			return elementDao
 					.findAllOriginByChildElements_ElementIdLikeAndActive(elementDomain+"@@"+elementId, true, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 		}
-		else {
+		else if(userRole.equals(UserRole.MANAGER)){
 			return elementDao
 					.findAllOriginByChildElements_ElementIdLike(elementDomain+"@@"+elementId, PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 		}
+		throw new UnauthorizedException("Admin cannot get An Array With Element Parent");
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public ElementBoundary[] getAllByName(String userDomain, String userEmail, String name, int size, int page) {
-		if(userDao.findById(userDomain+"@@"+userEmail).get().getRole().equals(UserRole.PLAYER)) {
+		UserRole userRole = userDao.findById(userDomain+"@@"+userEmail).get().getRole();
+		if(userRole.equals(UserRole.PLAYER)) {
 			return elementDao
 					.findAllByNameAndActive(name, true,  PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 		}
-		else {
+		else if(userRole.equals(UserRole.MANAGER)){
 			return elementDao
 					.findAllByName(name,  PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 		}
+		throw new UnauthorizedException("Admin cannot get All By Name");
 	}
 		
 
 	@Override
 	@Transactional(readOnly = true)
 	public ElementBoundary[] getAllByType(String userDomain, String userEmail, String type, int size, int page) {
-		if(userDao.findById(userDomain+"@@"+userEmail).get().getRole().equals(UserRole.PLAYER)) {
+		UserRole userRole = userDao.findById(userDomain+"@@"+userEmail).get().getRole();
+		if(userRole.equals(UserRole.PLAYER)) {
 			return elementDao
 					.findAllByTypeAndActive(type, true,  PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 		}
-		else {
+		else if(userRole.equals(UserRole.MANAGER)){
 			return elementDao
 					.findAllByType(type,PageRequest.of(page, size, Direction.ASC, "createdTimestamp","elementId"))
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 		}
+		throw new UnauthorizedException("Admin cannot get All By Name");
 	}
 
 	@Override
@@ -326,13 +337,13 @@ public class DbElementService implements ExtendedElementService{
 		double oneKMeter = (1/((2*pi/360)*earthRadius));
 		
 		double maxLat = lat + (distance * oneKMeter);
-		System.out.println(maxLat+"\n");
+		
 		double minLat = lat - (distance * oneKMeter);
-		System.out.println(minLat+"\n");
+		
 		double maxLng = lng + ((distance * oneKMeter)/cos);
-		System.out.println(maxLng+"\n");
+		
 		double minLng = lng - ((distance * oneKMeter)/cos);
-		System.out.println(minLng+"\n");
+		
 		
 		
 		
