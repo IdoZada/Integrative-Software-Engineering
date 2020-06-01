@@ -129,8 +129,10 @@ public class DbElementService implements ExtendedElementService{
 			}
 			
 			//Load lazy fields
-			existing.getOrigin();
-			existing.getChildElements();
+			if(existing.getOrigin() != null)
+				existing.getOrigin().getActive();
+			if(existing.getChildElements() != null)
+				existing.getChildElements().size();
 			
 			this.elementDao.save(existing);
 		return this.elementEntityConverter.fromEntity(existing);
