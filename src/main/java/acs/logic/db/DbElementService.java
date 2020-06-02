@@ -25,6 +25,7 @@ import acs.dal.ElementDao;
 import acs.dal.UserDao;
 import acs.data.ElementEntity;
 import acs.data.FacilityType;
+import acs.data.LocationEntity;
 import acs.data.UserRole;
 import acs.logic.ExtendedElementService;
 import acs.logic.NotFoundException;
@@ -100,8 +101,8 @@ public class DbElementService implements ExtendedElementService{
 	public ElementBoundary update(String managerDomain, String managerEmail, String elementDomain, String elementId,ElementBoundary update) {
 		
 		if(userDao.findById(managerDomain+"@@"+managerEmail).get().getRole().equals(UserRole.MANAGER)) {
-			ElementBoundary existing = this.elementEntityConverter.fromEntity(this.elementDao.findById(elementDomain + "@@" + elementId)
-					.orElseThrow(()->new NotFoundException("No element for id: " + elementId)));
+			ElementEntity existing = this.elementDao.findById(elementDomain + "@@" + elementId)
+					.orElseThrow(()->new NotFoundException("No element for id: " + elementId));
 //					this.getSpecificElement(managerDomain, managerEmail, elementDomain, elementId);
 
 			
@@ -118,15 +119,23 @@ public class DbElementService implements ExtendedElementService{
 			}
 			
 			if(update.getLocation() != null) {
-				existing.setLocation(update.getLocation());
+				LocationEntity location = 
+						new LocationEntity(update.getLocation().getLat(), update.getLocation().getLng());
+				existing.setLocation(location);
 			}
 			
 			if(update.getElementAttributes() != null) {
 				existing.setElementAttributes(update.getElementAttributes());
 			}
 			
-			this.elementDao.save(this.elementEntityConverter.toEntity(existing));
-		return existing;
+			//Load lazy fields
+			if(existing.getOrigin() != null)
+				existing.getOrigin().getActive();
+			if(existing.getChildElements() != null)
+				existing.getChildElements().size();
+			
+			this.elementDao.save(existing);
+		return this.elementEntityConverter.fromEntity(existing);
 		}
 		else {
 			throw new UnauthorizedException("just manager can update an element");
