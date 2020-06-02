@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.el.ELManager;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -91,9 +89,9 @@ public class ClientActions {
 		break;
 		case "get_capacity":{ map.put("capcity",getCapacityOfGarden(actionBoundary));}
 		break;
-		case "get_info_facility":{}
+		case "get_info_facility":{map.put("info_facility", getInfoFacility(actionBoundary));}
 		break;
-		case "get_info_garden":{}
+		case "get_info_garden":{map.put("info_garden", getInfoGarden(actionBoundary));}
 		break;
 		default:{
 			throw new NotFoundException("action type is not valid");
@@ -139,6 +137,20 @@ public class ClientActions {
 		ElementEntity elementEntity = getCurrentElement(elementDao,actionBoundary);
 		GardenInfo gardenInfo = attributeConverter.toAttribute(elementEntity.getElementAttributes().get("Info"), GardenInfo.class);
 		return gardenInfo.getCapacity();
+		
+	}
+	
+	private static InfoFacility getInfoFacility(ActionBoundary actionBoundary) {
+		ElementEntity elementEntity = getCurrentElement(elementDao,actionBoundary);
+		InfoFacility infoFacility = attributeConverter.toAttribute(elementEntity.getElementAttributes().get("Info"), InfoFacility.class);
+		return infoFacility;
+		
+	}
+	
+	private static GardenInfo getInfoGarden(ActionBoundary actionBoundary) {
+		ElementEntity elementEntity = getCurrentElement(elementDao,actionBoundary);
+		GardenInfo gardenInfo = attributeConverter.toAttribute(elementEntity.getElementAttributes().get("Info"), GardenInfo.class);
+		return gardenInfo;
 		
 	}
 	
