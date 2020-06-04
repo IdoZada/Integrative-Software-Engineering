@@ -1,5 +1,5 @@
 package acs.data;
 
 public enum FacilityStatus {
-	free , busy , occupied, broken
+	free , occupied, broken
 }
