@@ -68,7 +68,7 @@ public class ClientActions {
 		Map<String, Object> elementAttributes = new HashMap<>(elementEntity.getElementAttributes());
 		InfoFacility info = attributeConverter.toAttribute(elementAttributes.get(key), InfoFacility.class);
 		info.setStatus(value);
-		elementAttributes.put("key", info);
+		elementAttributes.put(key, info);
 		ElementBoundary elementBoundary = 
 				new ElementBoundary(actionBoundary.getElement().getElementId(),
 						null, null, null, null, null, null, elementAttributes);
