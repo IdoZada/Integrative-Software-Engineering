@@ -66,7 +66,9 @@ public class ClientActions {
 		String userDomain = actionBoundary.getInvokedBy().getUserId().getDomain();
 		String userEmail = actionBoundary.getInvokedBy().getUserId().getEmail();
 		Map<String, Object> elementAttributes = new HashMap<>(elementEntity.getElementAttributes());
-		((InfoFacility)elementAttributes.get(key)).setStatus(value);
+		InfoFacility info = attributeConverter.toAttribute(elementAttributes.get(key), InfoFacility.class);
+		info.setStatus(value);
+		elementAttributes.put("key", info);
 		ElementBoundary elementBoundary = 
 				new ElementBoundary(actionBoundary.getElement().getElementId(),
 						null, null, null, null, null, null, elementAttributes);
