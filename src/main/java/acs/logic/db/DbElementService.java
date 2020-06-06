@@ -340,18 +340,14 @@ public class DbElementService implements ExtendedElementService{
 	public ElementBoundary[] getAllByLocation(String userDomain, String userEmail, double lat, double lng,
 			double distance, int size, int page) {
 		
-		double earthRadius = 6378.137;
-		double pi = Math.PI;
-		double cos = Math.cos(lat * (pi / 180));
-		double oneKMeter = (1/((2*pi/360)*earthRadius));
 		
-		double maxLat = lat + (distance * oneKMeter);
+		double maxLat = lat +distance;
 		
-		double minLat = lat - (distance * oneKMeter);
+		double minLat = lat - distance;
 		
-		double maxLng = lng + ((distance * oneKMeter)/cos);
+		double maxLng = lng + distance;
 		
-		double minLng = lng - ((distance * oneKMeter)/cos);
+		double minLng = lng - distance;
 		
 		
 		
@@ -368,7 +364,7 @@ public class DbElementService implements ExtendedElementService{
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
 		}
-		else {
+		else if(userDao.findById(userDomain+"@@"+userEmail).get().getRole().equals(UserRole.MANAGER)){
 			return this.elementDao.findAllByLocation_LatBetweenAndLocation_LngBetween(
 					minLat,
 					maxLat,
@@ -378,6 +374,9 @@ public class DbElementService implements ExtendedElementService{
 					.stream()
 					.map(this.elementEntityConverter :: fromEntity)
 					.collect(Collectors.toList()).toArray(new ElementBoundary[0]);
+		}
+		else {
+			throw new UnauthorizedException("Admin cannot search by location");
 		}
 	}
 }
